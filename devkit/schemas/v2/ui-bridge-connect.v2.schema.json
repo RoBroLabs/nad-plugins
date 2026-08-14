@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.nad.robrolabs.com/package/v2/ui-bridge-connect.v2.schema.json",
+  "title": "NAD UI API v2 surface connection bootstrap",
+  "description": "Posted by the NAD host window with exactly one transferred MessagePort. The port itself is transport state and is not represented in this JSON document.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["type", "bridgeVersion", "sessionId"],
+  "properties": {
+    "type": { "const": "nad.ui.connect" },
+    "bridgeVersion": { "const": 2 },
+    "sessionId": { "type": "string", "pattern": "^[A-Za-z0-9_-]{22,128}$" }
+  }
+}

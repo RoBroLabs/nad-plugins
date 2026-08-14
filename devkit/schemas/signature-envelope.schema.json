@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nad.robrolabs.com/schemas/v1/signature-envelope.schema.json",
+  "title": "NAD Module signature envelope",
+  "description": "The exact UTF-8 JSON object signed for a schema-v1 Module package. Implementations sort files by path before JSON serialization.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["moduleId", "version", "digestAlgorithm", "files"],
+  "properties": {
+    "moduleId": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 160
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:[-+][0-9A-Za-z.-]+)?$"
+    },
+    "digestAlgorithm": {
+      "const": "sha256"
+    },
+    "files": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[a-f0-9]{64}$"
+      }
+    }
+  },
+  "examples": [
+    {
+      "moduleId": "dev.robrolabs.fixture",
+      "version": "1.2.3",
+      "digestAlgorithm": "sha256",
+      "files": {
+        "a.txt": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "z.txt": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      }
+    }
+  ]
+}

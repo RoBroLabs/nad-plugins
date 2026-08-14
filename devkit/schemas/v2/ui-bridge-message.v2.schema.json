@@ -1,0 +1,211 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.nad.robrolabs.com/package/v2/ui-bridge-message.v2.schema.json",
+  "title": "NAD UI API v2 MessageChannel envelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["bridgeVersion", "sessionId", "messageId", "type", "payload"],
+  "properties": {
+    "bridgeVersion": { "const": 2 },
+    "sessionId": { "type": "string", "pattern": "^[A-Za-z0-9_-]{22,128}$" },
+    "messageId": { "type": "string", "pattern": "^[A-Za-z0-9_-]{8,128}$" },
+    "replyTo": { "type": "string", "pattern": "^[A-Za-z0-9_-]{8,128}$" },
+    "type": {
+      "enum": [
+        "surface.ready", "surface.context", "binding.invoke", "binding.result", "binding.error",
+        "resize.request", "navigation.request", "connection.select.request", "diagnostic.emit",
+        "theme.changed", "connection.changed", "access.revoked"
+      ]
+    },
+    "payload": {}
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "type": { "const": "surface.ready" } }, "required": ["type"] },
+      "then": { "properties": { "payload": { "$ref": "#/$defs/empty" } } }
+    },
+    {
+      "if": { "properties": { "type": { "const": "surface.context" } }, "required": ["type"] },
+      "then": {
+        "required": ["replyTo"],
+        "properties": { "payload": { "$ref": "#/$defs/surfaceContext" } }
+      }
+    },
+    {
+      "if": { "properties": { "type": { "const": "binding.invoke" } }, "required": ["type"] },
+      "then": { "properties": { "payload": { "$ref": "#/$defs/bindingInvoke" } } }
+    },
+    {
+      "if": { "properties": { "type": { "const": "binding.result" } }, "required": ["type"] },
+      "then": {
+        "required": ["replyTo"],
+        "properties": { "payload": { "$ref": "#/$defs/bindingResult" } }
+      }
+    },
+    {
+      "if": { "properties": { "type": { "const": "binding.error" } }, "required": ["type"] },
+      "then": {
+        "required": ["replyTo"],
+        "properties": { "payload": { "$ref": "#/$defs/bindingError" } }
+      }
+    },
+    {
+      "if": { "properties": { "type": { "const": "resize.request" } }, "required": ["type"] },
+      "then": { "properties": { "payload": { "$ref": "#/$defs/resizeRequest" } } }
+    },
+    {
+      "if": { "properties": { "type": { "const": "navigation.request" } }, "required": ["type"] },
+      "then": { "properties": { "payload": { "$ref": "#/$defs/navigationRequest" } } }
+    },
+    {
+      "if": { "properties": { "type": { "const": "connection.select.request" } }, "required": ["type"] },
+      "then": { "properties": { "payload": { "$ref": "#/$defs/connectionSelectRequest" } } }
+    },
+    {
+      "if": { "properties": { "type": { "const": "diagnostic.emit" } }, "required": ["type"] },
+      "then": { "properties": { "payload": { "$ref": "#/$defs/diagnostic" } } }
+    },
+    {
+      "if": { "properties": { "type": { "const": "theme.changed" } }, "required": ["type"] },
+      "then": { "properties": { "payload": { "$ref": "#/$defs/themeChanged" } } }
+    },
+    {
+      "if": { "properties": { "type": { "const": "connection.changed" } }, "required": ["type"] },
+      "then": { "properties": { "payload": { "$ref": "#/$defs/connectionChanged" } } }
+    },
+    {
+      "if": { "properties": { "type": { "const": "access.revoked" } }, "required": ["type"] },
+      "then": { "properties": { "payload": { "$ref": "#/$defs/accessRevoked" } } }
+    }
+  ],
+  "$defs": {
+    "empty": { "type": "object", "additionalProperties": false },
+    "bindingName": { "type": "string", "pattern": "^[a-z][a-z0-9-]{0,63}$" },
+    "connectionSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[A-Za-z0-9_-]{16,128}$" },
+        "name": { "type": "string", "minLength": 1, "maxLength": 80 }
+      }
+    },
+    "surfaceContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["moduleSlug", "surfaceId", "bindings", "connectionSlots", "theme"],
+      "properties": {
+        "moduleSlug": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,63}$" },
+        "surfaceId": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,63}$" },
+        "bindings": {
+          "type": "array",
+          "maxItems": 32,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/bindingName" }
+        },
+        "connectionSlots": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["slot", "selectedProfileId", "profiles"],
+            "properties": {
+              "slot": { "$ref": "#/$defs/bindingName" },
+              "selectedProfileId": {
+                "type": ["string", "null"],
+                "pattern": "^[A-Za-z0-9_-]{16,128}$"
+              },
+              "profiles": {
+                "type": "array",
+                "maxItems": 128,
+                "items": { "$ref": "#/$defs/connectionSummary" }
+              }
+            }
+          }
+        },
+        "theme": { "enum": ["dark", "light"] }
+      }
+    },
+    "bindingInvoke": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["binding", "input"],
+      "properties": { "binding": { "$ref": "#/$defs/bindingName" }, "input": {} }
+    },
+    "bindingResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["binding", "result"],
+      "properties": { "binding": { "$ref": "#/$defs/bindingName" }, "result": {} }
+    },
+    "bindingError": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "message"],
+      "properties": {
+        "binding": { "$ref": "#/$defs/bindingName" },
+        "code": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{0,79}$" },
+        "message": { "type": "string", "minLength": 1, "maxLength": 500 }
+      }
+    },
+    "resizeRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["height"],
+      "properties": {
+        "width": { "type": "integer", "minimum": 1, "maximum": 8192 },
+        "height": { "type": "integer", "minimum": 160, "maximum": 1200 }
+      }
+    },
+    "navigationRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path"],
+      "properties": { "path": { "type": "string", "pattern": "^/[a-z0-9/-]*$", "maxLength": 120 } }
+    },
+    "connectionSelectRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["slot"],
+      "properties": { "slot": { "$ref": "#/$defs/bindingName" } }
+    },
+    "diagnostic": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["level", "code", "message"],
+      "properties": {
+        "level": { "enum": ["debug", "info", "warning", "error"] },
+        "code": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{0,79}$" },
+        "message": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "metadata": {
+          "type": "object",
+          "maxProperties": 16,
+          "propertyNames": { "pattern": "^[A-Za-z0-9_.:-]{1,80}$" },
+          "additionalProperties": { "type": ["string", "number", "boolean", "null"] }
+        }
+      }
+    },
+    "themeChanged": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["theme"],
+      "properties": { "theme": { "enum": ["dark", "light"] } }
+    },
+    "connectionChanged": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["slot", "profileId"],
+      "properties": {
+        "slot": { "$ref": "#/$defs/bindingName" },
+        "profileId": { "type": ["string", "null"], "pattern": "^[A-Za-z0-9_-]{16,128}$" }
+      }
+    },
+    "accessRevoked": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reason"],
+      "properties": { "reason": { "type": "string", "minLength": 1, "maxLength": 300 } }
+    }
+  }
+}

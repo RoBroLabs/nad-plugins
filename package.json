@@ -1,0 +1,32 @@
+{
+  "name": "nad-plugins",
+  "version": "0.3.0",
+  "private": true,
+  "description": "Public NAD Plugin Devkit contracts, scaffolds and clean-room tooling.",
+  "license": "AGPL-3.0-only",
+  "type": "module",
+  "packageManager": "pnpm@9.15.0",
+  "engines": {
+    "node": ">=20.20.0 <21 || >=22.22.0 <23",
+    "pnpm": "9.15.0"
+  },
+  "scripts": {
+    "build": "pnpm -r --sort build",
+    "clean_room": "bash devkit/scripts/ci-clean-room.sh",
+    "contracts_generate": "node devkit/scripts/generate-contracts.mjs",
+    "contracts_check": "node devkit/scripts/generate-contracts.mjs --check",
+    "devkit_build": "node devkit/scripts/build-devkit.mjs",
+    "devkit_verify": "node devkit/scripts/verify-devkit.mjs",
+    "devkit_clean_room": "bash devkit/scripts/ci-devkit-clean-room.sh",
+    "docs_check": "node devkit/scripts/check-docs.mjs",
+    "lint": "node devkit/scripts/lint.mjs && pnpm docs_check",
+    "test": "vitest run",
+    "typecheck": "tsc -b"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.9",
+    "json-schema-to-typescript": "15.0.4",
+    "typescript": "^5.7.3",
+    "vitest": "^3.2.4"
+  }
+}

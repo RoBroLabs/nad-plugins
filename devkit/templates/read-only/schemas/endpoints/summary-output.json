@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "__MODULE_NAME__ summary response",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["moduleId", "publisher", "headline", "statusMessage", "statusTone", "mode"],
+  "properties": {
+    "moduleId": { "type": "string" },
+    "publisher": { "type": "string" },
+    "headline": { "type": "string" },
+    "statusMessage": { "type": "string" },
+    "statusTone": { "enum": ["ok"] },
+    "mode": { "enum": ["read-only"] }
+  }
+}

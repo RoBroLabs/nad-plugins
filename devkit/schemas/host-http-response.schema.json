@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.nad.robrolabs.com/module/host-http-response.v1.schema.json",
+  "title": "ModuleHostHttpResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["status", "headers", "body"],
+  "properties": {
+    "status": { "type": "integer", "minimum": 100, "maximum": 599 },
+    "headers": { "type": "object", "additionalProperties": { "type": "string" } },
+    "body": {}
+  }
+}

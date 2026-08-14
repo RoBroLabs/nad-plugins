@@ -1,0 +1,17 @@
+{
+  "files": [],
+  "references": [
+    {
+      "path": "devkit/packages/sdk"
+    },
+    {
+      "path": "devkit/packages/testkit"
+    },
+    {
+      "path": "devkit/packages/cli"
+    },
+    {
+      "path": "devkit/examples/host-services"
+    }
+  ]
+}

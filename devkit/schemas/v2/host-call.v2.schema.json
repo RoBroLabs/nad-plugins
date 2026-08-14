@@ -1,0 +1,134 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.nad.robrolabs.com/package/v2/host-call.v2.schema.json",
+  "title": "NAD Host API v2 call",
+  "oneOf": [
+    { "$ref": "#/$defs/connectionsCurrent" },
+    { "$ref": "#/$defs/connectionsGet" },
+    { "$ref": "#/$defs/httpRequest" },
+    { "$ref": "#/$defs/notification" },
+    { "$ref": "#/$defs/storageGet" },
+    { "$ref": "#/$defs/storageSet" },
+    { "$ref": "#/$defs/storageDelete" },
+    { "$ref": "#/$defs/diagnostic" },
+    { "$ref": "#/$defs/audit" },
+    { "$ref": "#/$defs/appInvoke" }
+  ],
+  "$defs": {
+    "emptyParams": { "type": "object", "additionalProperties": false },
+    "storageKey": {
+      "type": "object", "additionalProperties": false, "required": ["key"],
+      "properties": { "key": { "type": "string", "pattern": "^[A-Za-z0-9_.:-]{1,120}$" } }
+    },
+    "connectionsCurrent": {
+      "type": "object", "additionalProperties": false, "required": ["method", "params"],
+      "properties": { "method": { "const": "connections.current" }, "params": { "$ref": "#/$defs/emptyParams" } }
+    },
+    "connectionsGet": {
+      "type": "object", "additionalProperties": false, "required": ["method", "params"],
+      "properties": {
+        "method": { "const": "connections.get" },
+        "params": {
+          "type": "object", "additionalProperties": false, "required": ["name"],
+          "properties": { "name": { "type": "string", "pattern": "^[a-z][a-z0-9_-]{0,63}$" } }
+        }
+      }
+    },
+    "httpRequest": {
+      "type": "object", "additionalProperties": false, "required": ["method", "params"],
+      "properties": {
+        "method": { "const": "http.request" },
+        "params": {
+          "type": "object", "additionalProperties": false, "required": ["scope"],
+          "properties": {
+            "scope": { "type": "string", "pattern": "^[a-z][a-z0-9-]{0,63}$" },
+            "method": { "enum": ["GET", "POST", "PUT", "DELETE"] },
+            "pathParameters": { "type": "object", "maxProperties": 8, "additionalProperties": { "type": ["string", "number"] } },
+            "query": { "type": "object", "maxProperties": 16, "additionalProperties": { "type": "string", "maxLength": 1024 } },
+            "headers": { "type": "object", "maxProperties": 8, "additionalProperties": { "type": "string", "maxLength": 512 } },
+            "body": {}
+          }
+        }
+      }
+    },
+    "notification": {
+      "type": "object", "additionalProperties": false, "required": ["method", "params"],
+      "properties": {
+        "method": { "const": "notifications.emit" },
+        "params": {
+          "type": "object", "additionalProperties": false, "required": ["key", "severity", "title", "body"],
+          "properties": {
+            "key": { "type": "string", "minLength": 1, "maxLength": 120 },
+            "severity": { "enum": ["info", "warning", "critical"] },
+            "title": { "type": "string", "minLength": 1, "maxLength": 160 },
+            "body": { "type": "string", "minLength": 1, "maxLength": 2000 },
+            "dedupeKey": { "type": "string", "minLength": 1, "maxLength": 160 }
+          }
+        }
+      }
+    },
+    "storageGet": {
+      "type": "object", "additionalProperties": false, "required": ["method", "params"],
+      "properties": { "method": { "const": "storage.get" }, "params": { "$ref": "#/$defs/storageKey" } }
+    },
+    "storageSet": {
+      "type": "object", "additionalProperties": false, "required": ["method", "params"],
+      "properties": {
+        "method": { "const": "storage.set" },
+        "params": {
+          "type": "object", "additionalProperties": false, "required": ["key", "value"],
+          "properties": { "key": { "type": "string", "pattern": "^[A-Za-z0-9_.:-]{1,120}$" }, "value": {} }
+        }
+      }
+    },
+    "storageDelete": {
+      "type": "object", "additionalProperties": false, "required": ["method", "params"],
+      "properties": { "method": { "const": "storage.delete" }, "params": { "$ref": "#/$defs/storageKey" } }
+    },
+    "diagnostic": {
+      "type": "object", "additionalProperties": false, "required": ["method", "params"],
+      "properties": {
+        "method": { "const": "diagnostics.emit" },
+        "params": {
+          "type": "object", "additionalProperties": false, "required": ["level", "code", "message"],
+          "properties": {
+            "level": { "enum": ["debug", "info", "warning", "error"] },
+            "code": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{0,79}$" },
+            "message": { "type": "string", "minLength": 1, "maxLength": 500 },
+            "metadata": {
+              "type": "object", "maxProperties": 16,
+              "propertyNames": { "pattern": "^[A-Za-z0-9_.:-]{1,80}$" },
+              "additionalProperties": { "type": ["string", "number", "boolean", "null"] }
+            }
+          }
+        }
+      }
+    },
+    "audit": {
+      "type": "object", "additionalProperties": false, "required": ["method", "params"],
+      "properties": {
+        "method": { "const": "audit.annotate" },
+        "params": {
+          "type": "object", "maxProperties": 16,
+          "propertyNames": { "pattern": "^[A-Za-z0-9_.:-]{1,80}$" },
+          "additionalProperties": { "type": ["string", "number", "boolean", "null"] }
+        }
+      }
+    },
+    "appInvoke": {
+      "type": "object", "additionalProperties": false, "required": ["method", "params"],
+      "properties": {
+        "method": { "const": "apps.invoke" },
+        "params": {
+          "type": "object", "additionalProperties": false, "required": ["dependency", "operation", "connectionProfileId", "input"],
+          "properties": {
+            "dependency": { "type": "string", "pattern": "^[a-z][a-z0-9-]{0,63}$" },
+            "operation": { "type": "string", "pattern": "^[a-z][a-z0-9.-]{0,79}$" },
+            "connectionProfileId": { "type": "string", "pattern": "^[A-Za-z0-9_-]{16,128}$" },
+            "input": {}
+          }
+        }
+      }
+    }
+  }
+}

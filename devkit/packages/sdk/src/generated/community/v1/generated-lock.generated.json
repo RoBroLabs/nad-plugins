@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "contractSha256": "36ca202e47f5ff8d5a74bfe48191c3377d467d0f76f32f082b661dc1a3605ca6",
+  "files": {
+    "catalog.generated.ts": "122e7578846e7e02c475566e20c1c7bb973d4ccfab2e766fa3b4c7ca48e66555",
+    "contract-lock.generated.json": "54dbb9e1caa43604dbc2a38eff779e668693e0998ee59c24c71ad592f478f7b6",
+    "index.ts": "f3226b1393440537cb0fa1474f5d49f37daebc2c855650bb16e5fba6a894842b",
+    "release.generated.ts": "f65d473b0f2418ecf4237dc00322cd79b4d6ce459ff4b09ff3679df327782b49",
+    "review-decision.generated.ts": "c0ee885ade8923133f3523d88164078c8ee06f4024cbf7023cc54a6020d524b2",
+    "schemas.generated.ts": "c49ac081a2e13915ac0feb5e59bedc9047ba8e27cf5300dbf83263ccc7d1280f",
+    "submission.generated.ts": "6e0d14cea2e98be708a3d83edff15a36231e56665744d33755f6382ac5168f47",
+    "validation-evidence.generated.ts": "77826f99b5ef5b570ff96c9f1980b4c9f2ca6c21abc138d08bdedc9b50625916"
+  }
+}

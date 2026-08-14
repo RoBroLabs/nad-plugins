@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.nad.robrolabs.com/community/release.v1.schema.json",
+  "title": "NAD reviewed community release index record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "namespace", "package", "source", "artifact", "review", "state", "publishedAt"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "namespace": { "type": "string", "pattern": "^[a-z][a-z0-9-]{1,39}$" },
+    "package": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "slug", "name", "kind", "version", "license"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9]*(\\.[a-z][a-z0-9-]*)+$" },
+        "slug": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,63}$" },
+        "name": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "kind": { "enum": ["app", "addon"] },
+        "version": { "type": "string", "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:[-+][0-9A-Za-z.-]+)?$" },
+        "license": { "type": "string", "minLength": 1, "maxLength": 120 }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["revision", "directory", "archiveSha256"],
+      "properties": {
+        "repositoryUrl": { "type": "string", "pattern": "^https://[^\\s]+$", "maxLength": 500 },
+        "revision": { "type": "string", "minLength": 7, "maxLength": 200 },
+        "directory": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "archiveSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["url", "sha256", "bytes", "releaseSignerKeyId", "publisherCandidateSha256"],
+      "properties": {
+        "url": { "type": "string", "pattern": "^https://[^\\s]+$", "maxLength": 500 },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "bytes": { "type": "integer", "minimum": 1, "maximum": 52428800 },
+        "releaseSignerKeyId": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,119}$" },
+        "publisherCandidateSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["attestationUrl", "attestationSha256", "reviewerKeyId", "validationEvidenceSha256"],
+      "properties": {
+        "attestationUrl": { "type": "string", "pattern": "^https://[^\\s]+$", "maxLength": 500 },
+        "attestationSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "reviewerKeyId": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,119}$" },
+        "validationEvidenceSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "state": { "enum": ["published", "deprecated", "yanked", "revoked"] },
+    "publishedAt": { "type": "string", "format": "date-time" }
+  }
+}

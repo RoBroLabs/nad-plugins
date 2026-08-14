@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.nad.robrolabs.com/package/v2/connection-schema.v2.schema.json",
+  "title": "NAD v2 connection profile schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "type", "additionalProperties", "properties"],
+  "properties": {
+    "$schema": { "const": "https://json-schema.org/draft/2020-12/schema" },
+    "title": { "type": "string", "minLength": 1, "maxLength": 160 },
+    "description": { "type": "string", "maxLength": 500 },
+    "type": { "const": "object" },
+    "additionalProperties": { "const": false },
+    "required": {
+      "type": "array",
+      "maxItems": 64,
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^[a-z][a-z0-9_-]{0,63}$" }
+    },
+    "properties": {
+      "type": "object",
+      "maxProperties": 64,
+      "propertyNames": { "pattern": "^[a-z][a-z0-9_-]{0,63}$" },
+      "additionalProperties": { "$ref": "#/$defs/field" }
+    }
+  },
+  "$defs": {
+    "field": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "title", "x-nad"],
+      "properties": {
+        "type": { "enum": ["string", "number", "integer", "boolean"] },
+        "title": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "description": { "type": "string", "maxLength": 300 },
+        "minLength": { "type": "integer", "minimum": 0, "maximum": 1000000 },
+        "maxLength": { "type": "integer", "minimum": 1, "maximum": 1000000 },
+        "minimum": { "type": "number" },
+        "maximum": { "type": "number" },
+        "pattern": { "type": "string", "maxLength": 500 },
+        "enum": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "items": { "type": ["string", "number", "boolean"] }
+        },
+        "default": { "type": ["string", "number", "boolean"] },
+        "x-nad": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["control"],
+          "properties": {
+            "control": { "enum": ["text", "url", "secret", "number", "boolean", "select"] },
+            "placeholder": { "type": "string", "maxLength": 200 },
+            "options": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 100,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["label", "value"],
+                "properties": {
+                  "label": { "type": "string", "minLength": 1, "maxLength": 80 },
+                  "value": { "type": "string", "maxLength": 200 }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.nad.robrolabs.com/community/review-decision.v1.schema.json",
+  "title": "NAD community review decision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "submissionId", "reviewerId", "decision", "sourceSha256", "candidateSha256", "validationEvidenceSha256", "notes", "decidedAt"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "submissionId": { "type": "string", "format": "uuid" },
+    "reviewerId": { "type": "string", "format": "uuid" },
+    "decision": { "enum": ["changes_requested", "rejected", "approved"] },
+    "sourceSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "candidateSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "validationEvidenceSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "notes": { "type": "string", "minLength": 1, "maxLength": 4000 },
+    "decidedAt": { "type": "string", "format": "date-time" }
+  }
+}

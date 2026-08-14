@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>__PACKAGE_NAME__</title>
+  <style>
+    :root { color-scheme: light dark; font: 14px/1.45 system-ui, sans-serif; }
+    body { margin: 0; padding: 16px; background: transparent; color: CanvasText; }
+    main { display: grid; gap: 8px; }
+    h1 { margin: 0; font-size: 1.1rem; }
+    p { margin: 0; color: GrayText; }
+  </style>
+</head>
+<body>
+  <main><h1 id="headline">__PACKAGE_NAME__</h1><p id="status">Waiting for the App…</p></main>
+  <script>
+    let port;
+    let sessionId = '';
+    let sequence = 0;
+    const send = (type, payload) => port?.postMessage({
+      bridgeVersion: 2,
+      sessionId,
+      messageId: `addon_${String(++sequence).padStart(8, '0')}`,
+      type,
+      payload
+    });
+    addEventListener('message', (event) => {
+      if (
+        event.data?.type !== 'nad.ui.connect'
+        || event.data.bridgeVersion !== 2
+        || typeof event.data.sessionId !== 'string'
+        || !/^[A-Za-z0-9_-]{22,128}$/.test(event.data.sessionId)
+        || event.ports.length !== 1
+      ) return;
+      port = event.ports[0];
+      sessionId = event.data.sessionId;
+      port.onmessage = ({ data }) => {
+        if (data?.type === 'binding.result' && data.payload?.binding === 'summary') {
+          document.querySelector('#headline').textContent = String(data.payload.result?.headline ?? '__PACKAGE_NAME__');
+          document.querySelector('#status').textContent = String(data.payload.result?.status ?? 'No status returned.');
+        }
+        if (data?.type === 'binding.error' || data?.type === 'access.revoked') {
+          document.querySelector('#status').textContent = 'This App connection is unavailable.';
+        }
+      };
+      send('surface.ready', {});
+      send('binding.invoke', { binding: 'summary', input: {} });
+    });
+  </script>
+</body>
+</html>

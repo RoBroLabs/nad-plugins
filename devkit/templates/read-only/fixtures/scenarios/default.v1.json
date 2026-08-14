@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "name": "Default Preview",
+  "description": "Deterministic read-only preview for nad-module dev.",
+  "defaultRole": "viewer",
+  "roles": {
+    "viewer": {
+      "grants": ["view"]
+    },
+    "denied": {
+      "grants": []
+    }
+  },
+  "config": {
+    "headline": "Operations Summary",
+    "status_message": "All monitored systems are healthy."
+  },
+  "requests": {
+    "summary": {
+      "method": "GET",
+      "body": {}
+    }
+  }
+}

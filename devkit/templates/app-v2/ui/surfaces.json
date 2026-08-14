@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 2,
+  "surfaces": [
+    {
+      "id": "summary",
+      "kind": "widget",
+      "name": "__PACKAGE_NAME__ Summary",
+      "description": "Summary from the selected named connection.",
+      "entry": "ui/surfaces/summary.html",
+      "bridge": "2.x",
+      "permissions": ["view"],
+      "connectionSlots": [
+        { "slot": "primary", "target": "self", "required": true }
+      ],
+      "bindings": {
+        "summary": { "target": "self", "operation": "summary", "connectionSlot": "primary" }
+      },
+      "widget": {
+        "defaultSize": { "w": 4, "h": 3 },
+        "minSize": { "w": 3, "h": 2 },
+        "maxSize": { "w": 8, "h": 6 },
+        "chrome": "standard"
+      },
+      "execution": {
+        "requestedMode": "sandbox",
+        "privileges": ["theme", "resize", "connection-selection"]
+      }
+    }
+  ]
+}

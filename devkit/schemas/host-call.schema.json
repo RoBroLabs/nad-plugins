@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.nad.robrolabs.com/module/host-call.v1.schema.json",
+  "title": "ModuleHostCallDocument",
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["method", "params"],
+      "properties": {
+        "method": { "const": "config.get" },
+        "params": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name"],
+          "properties": { "name": { "type": "string", "minLength": 1, "maxLength": 64 } }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["method", "params"],
+      "properties": {
+        "method": { "const": "http.request" },
+        "params": { "$ref": "#/$defs/httpRequest" }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["method", "params"],
+      "properties": {
+        "method": { "const": "notifications.emit" },
+        "params": { "$ref": "#/$defs/notification" }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["method", "params"],
+      "properties": {
+        "method": { "const": "storage.get" },
+        "params": { "$ref": "#/$defs/storageKey" }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["method", "params"],
+      "properties": {
+        "method": { "const": "storage.set" },
+        "params": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["key", "value"],
+          "properties": {
+            "key": { "type": "string", "pattern": "^[A-Za-z0-9_.:-]{1,120}$" },
+            "value": {}
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["method", "params"],
+      "properties": {
+        "method": { "const": "storage.delete" },
+        "params": { "$ref": "#/$defs/storageKey" }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["method", "params"],
+      "properties": {
+        "method": { "const": "audit.annotate" },
+        "params": { "$ref": "#/$defs/auditMetadata" }
+      }
+    }
+  ],
+  "$defs": {
+    "httpRequest": {
+      "title": "ModuleHostHttpRequest",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["url"],
+      "properties": {
+        "url": { "type": "string", "minLength": 1, "maxLength": 2048 },
+        "method": { "enum": ["GET", "POST", "PUT", "DELETE"] },
+        "headers": {
+          "type": "object",
+          "maxProperties": 8,
+          "additionalProperties": { "type": "string", "maxLength": 512 }
+        },
+        "body": {}
+      }
+    },
+    "notification": {
+      "title": "ModuleHostNotification",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "severity", "title", "body"],
+      "properties": {
+        "key": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "severity": { "enum": ["info", "warning", "critical"] },
+        "title": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "body": { "type": "string", "minLength": 1, "maxLength": 2000 },
+        "dedupeKey": { "type": "string", "minLength": 1, "maxLength": 160 }
+      }
+    },
+    "storageKey": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key"],
+      "properties": { "key": { "type": "string", "pattern": "^[A-Za-z0-9_.:-]{1,120}$" } }
+    },
+    "auditMetadata": {
+      "title": "ModuleAuditMetadata",
+      "type": "object",
+      "maxProperties": 16,
+      "propertyNames": { "pattern": "^[A-Za-z0-9_.:-]{1,80}$" },
+      "additionalProperties": { "type": ["string", "number", "boolean", "null"] }
+    }
+  }
+}

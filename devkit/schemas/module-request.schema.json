@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.nad.robrolabs.com/module/request.v1.schema.json",
+  "title": "ModuleInvocationRequestDocument",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["method"],
+  "properties": {
+    "method": { "enum": ["GET", "POST", "PUT", "DELETE"] },
+    "body": {}
+  }
+}

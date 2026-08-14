@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.nad.robrolabs.com/module/ui-pages.v1.schema.json",
+  "title": "ModulePagesDocument",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "pages"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "pages": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "title", "body"],
+        "properties": {
+          "path": { "const": "/" },
+          "title": { "type": "string", "minLength": 1, "maxLength": 80 },
+          "icon": { "type": "string", "maxLength": 64 },
+          "source": { "$ref": "#/$defs/source" },
+          "body": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "$ref": "#/$defs/element" }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["endpoint"],
+      "properties": {
+        "endpoint": { "type": "string" },
+        "refreshIntervalMs": { "type": "integer", "minimum": 1000 }
+      }
+    },
+    "element": { "$ref": "ui-element.v1.schema.json" }
+  }
+}

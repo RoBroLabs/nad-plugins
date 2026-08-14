@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "id": "dev.robrolabs.examples.host-services",
+  "slug": "host-services-example",
+  "name": "Host Services Example",
+  "description": "Demonstrates safe mutation, storage, audit and core notification contracts.",
+  "icon": "bell-ring",
+  "category": "tools",
+  "version": "0.2.0",
+  "publisher": "Robro Labs",
+  "compatibility": {
+    "core": ">=0.2.4 <1.0.0",
+    "hostApi": "1.x",
+    "uiApi": "1.x"
+  },
+  "capabilities": [
+    { "name": "storage.get", "reason": "Checks whether this exact request was already handled." },
+    { "name": "storage.set", "reason": "Stores a bounded idempotency marker after acknowledgement." },
+    { "name": "notifications.emit", "reason": "Asks NAD core to dispatch an acknowledgement notification." },
+    { "name": "audit.annotate", "reason": "Adds safe incident and outcome context to the core audit event." }
+  ],
+  "permissions": [
+    {
+      "action": "incident.acknowledge",
+      "label": "Acknowledge incidents",
+      "risk": "write",
+      "description": "Allows the user to acknowledge an incident and notify configured channels."
+    }
+  ],
+  "configSchema": [],
+  "dataMigrations": [
+    {
+      "fromVersion": "0.1.0",
+      "toVersion": "0.2.0",
+      "storage": [
+        { "op": "rename", "from": "processed", "to": "processed-legacy" },
+        { "op": "setDefault", "key": "ack-schema-version", "value": 2 }
+      ]
+    }
+  ],
+  "entrypoints": {
+    "acknowledge": {
+      "method": "POST",
+      "kind": "mutation",
+      "permission": "incident.acknowledge",
+      "handler": "acknowledgeIncident",
+      "requestSchema": "schemas/endpoints/acknowledge-input.json",
+      "responseSchema": "schemas/endpoints/acknowledge-output.json",
+      "timeoutClass": "action",
+      "maxRequestBytes": 512,
+      "maxResponseBytes": 512,
+      "auditAction": "incident.acknowledge"
+    }
+  }
+}

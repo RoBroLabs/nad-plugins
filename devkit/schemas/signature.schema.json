@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.nad.robrolabs.com/module/signature.v1.schema.json",
+  "title": "ModuleSignatureDocument",
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "mode", "warning", "signedPayload"],
+      "properties": {
+        "schemaVersion": { "const": 1 },
+        "mode": { "const": "unsigned-dev" },
+        "warning": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "signedPayload": { "$ref": "#/$defs/signedPayload" }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "mode", "algorithm", "keyId", "signature", "signedPayload"],
+      "properties": {
+        "schemaVersion": { "const": 1 },
+        "mode": { "const": "signed" },
+        "algorithm": { "const": "Ed25519" },
+        "keyId": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,119}$" },
+        "signature": { "type": "string", "minLength": 1, "maxLength": 512 },
+        "signedPayload": { "$ref": "#/$defs/signedPayload" }
+      }
+    }
+  ],
+  "$defs": {
+    "signedPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["moduleId", "version", "digestAlgorithm", "files"],
+      "properties": {
+        "moduleId": { "type": "string" },
+        "version": { "type": "string" },
+        "digestAlgorithm": { "const": "sha256" },
+        "files": {
+          "type": "object",
+          "additionalProperties": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+        }
+      }
+    }
+  }
+}

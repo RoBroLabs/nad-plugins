@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 2,
+  "kind": "addon",
+  "id": "__PACKAGE_ID__",
+  "slug": "__PACKAGE_SLUG__",
+  "name": "__PACKAGE_NAME__",
+  "description": "A UI-only NAD Add-on that consumes a versioned App operation.",
+  "icon": "layout-panel-top",
+  "category": "tools",
+  "version": "0.1.0",
+  "publisher": "__PACKAGE_PUBLISHER__",
+  "compatibility": {
+    "core": ">=0.3.0 <1.0.0",
+    "hostApi": "2.x",
+    "uiApi": "2.x"
+  },
+  "capabilities": [
+    {
+      "name": "apps.invoke",
+      "reason": "Invoke only declared versioned operations on the owning App through NAD core."
+    }
+  ],
+  "permissions": [
+    { "action": "view", "label": "View Add-on", "risk": "read", "description": "View this approved Add-on surface." }
+  ],
+  "dependencies": [
+    {
+      "alias": "app",
+      "appId": "__APP_ID__",
+      "packageVersion": "__APP_VERSION__",
+      "operations": { "summary": "^1.0.0" }
+    }
+  ],
+  "surfaces": "ui/surfaces.json"
+}

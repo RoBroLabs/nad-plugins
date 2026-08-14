@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.nad.robrolabs.com/module/http-access.v1.schema.json",
+  "title": "ModuleHttpAccessScopeDocument",
+  "oneOf": [
+    { "$ref": "#/$defs/fixedPortHttpAccessScope" },
+    { "$ref": "#/$defs/configuredPortHttpAccessScope" },
+    { "$ref": "#/$defs/urlPortHttpAccessScope" }
+  ],
+  "$defs": {
+    "httpMethods": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 4,
+      "uniqueItems": true,
+      "items": { "enum": ["GET", "POST", "PUT", "DELETE"] }
+    },
+    "headerNames": {
+      "type": "array",
+      "maxItems": 8,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 80,
+        "pattern": "^[A-Za-z0-9-]+$"
+      }
+    },
+    "queryParameters": {
+      "type": "array",
+      "maxItems": 16,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 80,
+        "pattern": "^[A-Za-z0-9_.~-]+$"
+      }
+    },
+    "pathParameters": {
+      "type": "object",
+      "maxProperties": 8,
+      "propertyNames": { "pattern": "^[A-Za-z][A-Za-z0-9_]{0,31}$" },
+      "additionalProperties": { "enum": ["segment", "integer"] }
+    },
+    "credentialInjection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["config", "location", "name"],
+      "properties": {
+        "config": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$" },
+        "location": { "enum": ["header", "query", "json-body"] },
+        "name": { "type": "string", "minLength": 1, "maxLength": 80, "pattern": "^[A-Za-z0-9_.~-]+$" },
+        "prefix": { "type": "string", "maxLength": 128 },
+        "publicConfig": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$" },
+        "separator": { "type": "string", "maxLength": 16 }
+      }
+    },
+    "sharedProperties": {
+      "scheme": { "enum": ["http", "https"] },
+      "hostConfig": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$" },
+      "path": { "type": "string", "minLength": 1, "maxLength": 2048, "pattern": "^/[^?#]*$" },
+      "methods": { "$ref": "#/$defs/httpMethods" },
+      "effect": { "enum": ["read", "write"] },
+      "requestBodyPolicy": { "enum": ["graphql-query", "credential-only", "session-cleanup"] },
+      "allowedHeaders": { "$ref": "#/$defs/headerNames" },
+      "queryParameters": { "$ref": "#/$defs/queryParameters" },
+      "pathParameters": { "$ref": "#/$defs/pathParameters" },
+      "credential": { "$ref": "#/$defs/credentialInjection" },
+      "tlsVerifyConfig": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$" }
+    },
+    "fixedPortHttpAccessScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scheme", "hostConfig", "port", "path", "methods"],
+      "properties": {
+        "scheme": { "$ref": "#/$defs/sharedProperties/scheme" },
+        "hostConfig": { "$ref": "#/$defs/sharedProperties/hostConfig" },
+        "port": { "type": "integer", "minimum": 1, "maximum": 65535 },
+        "path": { "$ref": "#/$defs/sharedProperties/path" },
+        "methods": { "$ref": "#/$defs/sharedProperties/methods" },
+        "effect": { "$ref": "#/$defs/sharedProperties/effect" },
+        "requestBodyPolicy": { "$ref": "#/$defs/sharedProperties/requestBodyPolicy" },
+        "allowedHeaders": { "$ref": "#/$defs/sharedProperties/allowedHeaders" },
+        "queryParameters": { "$ref": "#/$defs/sharedProperties/queryParameters" },
+        "pathParameters": { "$ref": "#/$defs/sharedProperties/pathParameters" },
+        "credential": { "$ref": "#/$defs/sharedProperties/credential" },
+        "tlsVerifyConfig": { "$ref": "#/$defs/sharedProperties/tlsVerifyConfig" }
+      }
+    },
+    "configuredPortHttpAccessScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scheme", "hostConfig", "portConfig", "path", "methods"],
+      "properties": {
+        "scheme": { "$ref": "#/$defs/sharedProperties/scheme" },
+        "hostConfig": { "$ref": "#/$defs/sharedProperties/hostConfig" },
+        "portConfig": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$" },
+        "path": { "$ref": "#/$defs/sharedProperties/path" },
+        "methods": { "$ref": "#/$defs/sharedProperties/methods" },
+        "effect": { "$ref": "#/$defs/sharedProperties/effect" },
+        "requestBodyPolicy": { "$ref": "#/$defs/sharedProperties/requestBodyPolicy" },
+        "allowedHeaders": { "$ref": "#/$defs/sharedProperties/allowedHeaders" },
+        "queryParameters": { "$ref": "#/$defs/sharedProperties/queryParameters" },
+        "pathParameters": { "$ref": "#/$defs/sharedProperties/pathParameters" },
+        "credential": { "$ref": "#/$defs/sharedProperties/credential" },
+        "tlsVerifyConfig": { "$ref": "#/$defs/sharedProperties/tlsVerifyConfig" }
+      }
+    },
+    "urlPortHttpAccessScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scheme", "hostConfig", "path", "methods"],
+      "properties": {
+        "scheme": { "$ref": "#/$defs/sharedProperties/scheme" },
+        "hostConfig": { "$ref": "#/$defs/sharedProperties/hostConfig" },
+        "path": { "$ref": "#/$defs/sharedProperties/path" },
+        "methods": { "$ref": "#/$defs/sharedProperties/methods" },
+        "effect": { "$ref": "#/$defs/sharedProperties/effect" },
+        "requestBodyPolicy": { "$ref": "#/$defs/sharedProperties/requestBodyPolicy" },
+        "allowedHeaders": { "$ref": "#/$defs/sharedProperties/allowedHeaders" },
+        "queryParameters": { "$ref": "#/$defs/sharedProperties/queryParameters" },
+        "pathParameters": { "$ref": "#/$defs/sharedProperties/pathParameters" },
+        "credential": { "$ref": "#/$defs/sharedProperties/credential" },
+        "tlsVerifyConfig": { "$ref": "#/$defs/sharedProperties/tlsVerifyConfig" }
+      }
+    }
+  }
+}

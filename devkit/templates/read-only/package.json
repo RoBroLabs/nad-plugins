@@ -1,0 +1,24 @@
+{
+  "name": "@nad/module-__MODULE_SLUG__",
+  "version": "0.1.0",
+  "private": true,
+  "description": "__MODULE_NAME__ read-only NAD Module.",
+  "license": "AGPL-3.0-only",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "check": "nad-module check .",
+    "preview": "pnpm build && nad-module dev .",
+    "preview:once": "pnpm build && nad-module dev . --once",
+    "typecheck": "tsc -p tsconfig.json --pretty false",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@nad/cli": "^0.3.0",
+    "@nad/sdk": "^0.3.0",
+    "@nad/testkit": "^0.3.0",
+    "@types/node": "^20.19.9",
+    "typescript": "^5.7.3",
+    "vitest": "^3.2.4"
+  }
+}

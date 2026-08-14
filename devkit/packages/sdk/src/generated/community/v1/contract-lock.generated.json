@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "community-1.0",
+  "sha256": "36ca202e47f5ff8d5a74bfe48191c3377d467d0f76f32f082b661dc1a3605ca6",
+  "files": {
+    "catalog.v1.schema.json": "09936b6cf777606597fd09d3f5516e89d2456b3bcc3307e7b674b39a8850fd74",
+    "release.v1.schema.json": "44dd63a54df268867b9af5b6f6d91c2e7a6a37329aeb0a0bf2c98963d90687fe",
+    "review-decision.v1.schema.json": "7ba786776dcece2e517bc5589584c40e78a030f8e38b4b606f9bbf8186665326",
+    "submission.v1.schema.json": "af3a0da600a5591a90c4f8eb7a5176000b2dd3afb0e4727754074afc2a78e0e3",
+    "validation-evidence.v1.schema.json": "83f845efcbb735ac8cd93d2834305f913727342e4f9afac78e8f42c8d1682823"
+  }
+}

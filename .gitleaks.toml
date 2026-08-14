@@ -1,0 +1,15 @@
+title = "NAD SDK secret scanning"
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "generic-api-key"
+
+  [[rules.allowlists]]
+  description = "Generated public contract SHA-256 lock values"
+  paths = [
+    '''packages/sdk/src/generated/v[12]/(contract-lock|generated-lock)\.generated\.json$''',
+    '''packages/sdk/src/generated/v[12]/schemas\.generated\.ts$''',
+    '''packages/sdk/dist/generated/v[12]/schemas\.generated\.(js|d\.ts)$''',
+  ]

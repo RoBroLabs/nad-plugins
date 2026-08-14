@@ -1,0 +1,16 @@
+{
+  "name": "@nad/addon-__PACKAGE_SLUG__",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "AGPL-3.0-only",
+  "scripts": {
+    "build": "node -e \"console.log('UI-only Add-on: no server build required.')\"",
+    "check": "nad check ."
+  },
+  "devDependencies": {
+    "@nad/cli": "^0.3.0",
+    "@nad/sdk": "^0.3.0",
+    "@nad/testkit": "^0.3.0"
+  }
+}

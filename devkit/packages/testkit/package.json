@@ -1,0 +1,36 @@
+{
+  "name": "@nad/testkit",
+  "version": "0.3.0",
+  "description": "NAD Module contract test helpers and fake host API fixtures.",
+  "license": "AGPL-3.0-only",
+  "type": "module",
+  "files": [
+    "dist/**/*.js",
+    "dist/**/*.d.ts",
+    "!dist/**/*.test.js",
+    "!dist/**/*.test.d.ts",
+    "!dist/**/*.map"
+  ],
+  "engines": {
+    "node": ">=20.20.0 <21 || >=22.22.0 <23"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc -b --pretty false",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@nad/sdk": "workspace:*"
+  }
+}

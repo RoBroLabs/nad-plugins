@@ -1,0 +1,193 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.nad.robrolabs.com/module/manifest.v1.schema.json",
+  "title": "ModuleManifestDocument",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "slug",
+    "name",
+    "description",
+    "icon",
+    "category",
+    "version",
+    "publisher",
+    "compatibility",
+    "capabilities",
+    "permissions",
+    "configSchema",
+    "entrypoints"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "capabilities": {
+            "type": "array",
+            "contains": {
+              "type": "object",
+              "required": ["name"],
+              "properties": { "name": { "const": "http.request" } }
+            }
+          }
+        }
+      },
+      "then": { "required": ["httpAccess"] },
+      "else": { "not": { "required": ["httpAccess"] } }
+    }
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9]*(\\.[a-z][a-z0-9-]*)+$" },
+    "slug": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,63}$" },
+    "name": { "type": "string", "minLength": 1, "maxLength": 80 },
+    "description": { "type": "string", "minLength": 1, "maxLength": 300 },
+    "icon": { "type": "string", "minLength": 1, "maxLength": 64 },
+    "category": {
+      "enum": ["servers", "media", "games", "network", "tools", "automation", "monitoring", "custom"]
+    },
+    "version": { "type": "string", "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:[-+][0-9A-Za-z.-]+)?$" },
+    "publisher": { "type": "string", "minLength": 1, "maxLength": 80 },
+    "compatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["core", "hostApi", "uiApi"],
+      "properties": {
+        "core": { "type": "string" },
+        "hostApi": { "type": "string" },
+        "uiApi": { "type": "string" }
+      }
+    },
+    "capabilities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "reason"],
+        "properties": {
+          "name": {
+            "enum": [
+              "config.get",
+              "http.request",
+              "notifications.emit",
+              "storage.get",
+              "storage.set",
+              "storage.delete",
+              "audit.annotate"
+            ]
+          },
+          "reason": { "type": "string", "minLength": 1, "maxLength": 200 }
+        }
+      }
+    },
+    "httpAccess": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": { "$ref": "http-access.v1.schema.json" }
+    },
+    "permissions": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["action", "label", "risk"],
+        "properties": {
+          "action": { "type": "string", "pattern": "^[a-z][a-z0-9]*(?:[.:_-][a-z0-9]+)*$" },
+          "label": { "type": "string", "minLength": 1, "maxLength": 80 },
+          "risk": { "enum": ["read", "write", "admin"] },
+          "description": { "type": "string", "maxLength": 200 }
+        }
+      }
+    },
+    "configSchema": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["key", "label", "type", "required"],
+        "properties": {
+          "key": { "type": "string", "minLength": 1, "maxLength": 64 },
+          "label": { "type": "string", "minLength": 1, "maxLength": 80 },
+          "type": { "enum": ["text", "url", "secret", "number", "boolean", "select"] },
+          "required": { "type": "boolean" },
+          "description": { "type": "string", "maxLength": 300 },
+          "placeholder": { "type": "string", "maxLength": 200 },
+          "defaultValue": { "type": ["string", "number", "boolean"] },
+          "min": { "type": "number" },
+          "max": { "type": "number" },
+          "options": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["label", "value"],
+              "properties": {
+                "label": { "type": "string" },
+                "value": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "dataMigrations": {
+      "type": "array",
+      "maxItems": 32,
+      "items": { "$ref": "data-migration.v1.schema.json" }
+    },
+    "entrypoints": {
+      "type": "object",
+      "minProperties": 1,
+      "maxProperties": 64,
+      "additionalProperties": {
+        "oneOf": [
+          { "$ref": "#/$defs/queryEntrypoint" },
+          { "$ref": "#/$defs/mutationEntrypoint" }
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "queryEntrypoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["method", "kind", "permission", "handler", "requestSchema", "responseSchema", "timeoutClass", "maxRequestBytes", "maxResponseBytes"],
+      "properties": {
+        "method": { "enum": ["GET", "POST", "PUT", "DELETE"] },
+        "kind": { "const": "query" },
+        "permission": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "handler": { "type": "string", "pattern": "^[A-Za-z_$][A-Za-z0-9_$]*$" },
+        "requestSchema": { "type": "string", "pattern": "^schemas/endpoints/[a-z0-9][a-z0-9-]*\\.json$" },
+        "responseSchema": { "type": "string", "pattern": "^schemas/endpoints/[a-z0-9][a-z0-9-]*\\.json$" },
+        "timeoutClass": { "enum": ["short", "standard", "action"] },
+        "maxRequestBytes": { "type": "integer", "minimum": 0, "maximum": 65536 },
+        "maxResponseBytes": { "type": "integer", "minimum": 1, "maximum": 524288 }
+      }
+    },
+    "mutationEntrypoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["method", "kind", "permission", "handler", "requestSchema", "responseSchema", "timeoutClass", "maxRequestBytes", "maxResponseBytes", "auditAction"],
+      "properties": {
+        "method": { "enum": ["POST", "PUT", "DELETE"] },
+        "kind": { "const": "mutation" },
+        "permission": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "handler": { "type": "string", "pattern": "^[A-Za-z_$][A-Za-z0-9_$]*$" },
+        "requestSchema": { "type": "string", "pattern": "^schemas/endpoints/[a-z0-9][a-z0-9-]*\\.json$" },
+        "responseSchema": { "type": "string", "pattern": "^schemas/endpoints/[a-z0-9][a-z0-9-]*\\.json$" },
+        "timeoutClass": { "enum": ["short", "standard", "action"] },
+        "maxRequestBytes": { "type": "integer", "minimum": 0, "maximum": 65536 },
+        "maxResponseBytes": { "type": "integer", "minimum": 1, "maximum": 524288 },
+        "auditAction": { "type": "string", "minLength": 1, "maxLength": 80 }
+      }
+    }
+  }
+}

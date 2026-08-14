@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 2,
+  "kind": "app",
+  "id": "__PACKAGE_ID__",
+  "slug": "__PACKAGE_SLUG__",
+  "name": "__PACKAGE_NAME__",
+  "description": "A NAD App scaffold with named connections and a sandboxed Widget.",
+  "icon": "plug",
+  "category": "tools",
+  "version": "0.1.0",
+  "publisher": "__PACKAGE_PUBLISHER__",
+  "compatibility": {
+    "core": ">=0.3.0 <1.0.0",
+    "hostApi": "2.x",
+    "uiApi": "2.x"
+  },
+  "capabilities": [
+    { "name": "connections.current", "reason": "Identify the core-selected named connection profile." },
+    { "name": "connections.get", "reason": "Read non-secret fields from the selected connection profile." }
+  ],
+  "permissions": [
+    { "action": "view", "label": "View summary", "risk": "read", "description": "View the App summary for an allowed connection." }
+  ],
+  "connections": {
+    "schema": "schemas/connections.json",
+    "multiple": true
+  },
+  "operations": {
+    "summary": {
+      "version": "1.0.0",
+      "kind": "query",
+      "consumers": ["self", "addon"],
+      "connection": "required",
+      "permission": "view",
+      "handler": "summary",
+      "requestSchema": "schemas/operations/summary-input.json",
+      "responseSchema": "schemas/operations/summary-output.json",
+      "timeoutClass": "short",
+      "maxRequestBytes": 1024,
+      "maxResponseBytes": 8192
+    }
+  },
+  "surfaces": "ui/surfaces.json"
+}

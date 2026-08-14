@@ -1,0 +1,8 @@
+{
+  "moduleId": "__MODULE_ID__",
+  "publisher": "__MODULE_PUBLISHER__",
+  "headline": "Operations Summary",
+  "statusMessage": "All monitored systems are healthy.",
+  "statusTone": "ok",
+  "mode": "read-only"
+}

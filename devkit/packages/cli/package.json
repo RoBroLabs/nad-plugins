@@ -1,0 +1,38 @@
+{
+  "name": "@nad/cli",
+  "version": "0.3.0",
+  "description": "NAD Module authoring and packaging CLI.",
+  "license": "AGPL-3.0-only",
+  "type": "module",
+  "files": [
+    "dist/**/*.js",
+    "dist/**/*.d.ts",
+    "!dist/**/*.test.js",
+    "!dist/**/*.test.d.ts",
+    "!dist/**/*.map",
+    "templates"
+  ],
+  "engines": {
+    "node": ">=20.20.0 <21 || >=22.22.0 <23"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bin": {
+    "nad": "./dist/index.js",
+    "nad-module": "./dist/index.js"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b",
+    "prepack": "node ../../scripts/sync-cli-templates.mjs",
+    "postpack": "node ../../scripts/sync-cli-templates.mjs --clean",
+    "typecheck": "tsc -b --pretty false",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@nad/sdk": "workspace:*",
+    "@nad/testkit": "workspace:*"
+  }
+}

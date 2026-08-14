@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "pages": [
+    {
+      "path": "/",
+      "title": "__MODULE_NAME__",
+      "icon": "file-text",
+      "source": {
+        "endpoint": "summary",
+        "refreshIntervalMs": 30000
+      },
+      "body": [
+        {
+          "type": "section",
+          "title": "Overview",
+          "body": [
+            { "type": "status", "label": "State", "valuePath": "statusMessage", "tonePath": "statusTone" },
+            {
+              "type": "keyValue",
+              "items": [
+                { "label": "Headline", "valuePath": "headline" },
+                { "label": "Mode", "valuePath": "mode" },
+                { "label": "Publisher", "valuePath": "publisher" }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "__PACKAGE_NAME__ connection",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["headline", "status_message"],
+  "properties": {
+    "headline": {
+      "type": "string",
+      "title": "Headline",
+      "maxLength": 120,
+      "x-nad": { "control": "text", "placeholder": "Operations summary" }
+    },
+    "status_message": {
+      "type": "string",
+      "title": "Status message",
+      "maxLength": 300,
+      "x-nad": { "control": "text", "placeholder": "All systems are healthy." }
+    }
+  }
+}

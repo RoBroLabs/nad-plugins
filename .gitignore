@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.ci-tools/
+.release-staging/
+.public-export/
+devkit/packages/cli/templates/
+.env*
+!.env.example
+*.tsbuildinfo
+*.log
+.DS_Store

@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 2,
+  "name": "Default App preview",
+  "profiles": [
+    {
+      "id": "fixture_profile_0001",
+      "name": "Lab",
+      "values": { "headline": "Lab status", "status_message": "All systems are healthy." }
+    }
+  ],
+  "selectedProfileId": "fixture_profile_0001",
+  "roles": { "viewer": { "grants": ["view"] } },
+  "defaultRole": "viewer"
+}

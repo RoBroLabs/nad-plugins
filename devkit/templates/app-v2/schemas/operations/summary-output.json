@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["profile", "headline", "status"],
+  "properties": {
+    "profile": { "type": "string", "maxLength": 80 },
+    "headline": { "type": "string", "maxLength": 120 },
+    "status": { "type": "string", "maxLength": 300 }
+  }
+}

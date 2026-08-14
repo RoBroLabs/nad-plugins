@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.nad.robrolabs.com/module/release-record.v1.schema.json",
+  "title": "ModuleReleaseRecordDocument",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "module", "provenance", "manifest", "changelog", "hotUpdate", "artifact", "signature", "conformance"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "module": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "slug", "name", "version", "publisher"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9]*(\\.[a-z][a-z0-9-]*)+$" },
+        "slug": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,63}$" },
+        "name": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "version": { "type": "string", "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:[-+][0-9A-Za-z.-]+)?$" },
+        "publisher": { "type": "string", "minLength": 1, "maxLength": 80 }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["releasedAt", "sourceRevision", "sourceDirectory", "license"],
+      "properties": {
+        "releasedAt": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+        "sourceRevision": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "sourceDirectory": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "license": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "repositoryUrl": { "type": ["string", "null"], "maxLength": 500 },
+        "sourceUrl": { "type": ["string", "null"], "maxLength": 500 },
+        "sourceTag": { "type": ["string", "null"], "maxLength": 200 }
+      }
+    },
+    "manifest": { "$ref": "#/$defs/manifestSummary" },
+    "changelog": { "$ref": "#/$defs/changelog" },
+    "hotUpdate": { "$ref": "#/$defs/hotUpdate" },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fileName", "path", "bytes", "sha256", "entryCount", "entries"],
+      "properties": {
+        "fileName": { "type": "string", "pattern": "^[a-z0-9][a-z0-9.-]*\\.nadmod$" },
+        "path": { "type": "string", "minLength": 1, "maxLength": 240 },
+        "bytes": { "type": "integer", "minimum": 1, "maximum": 52428800 },
+        "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "entryCount": { "type": "integer", "minimum": 1, "maximum": 200 },
+        "entries": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 200,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1, "maxLength": 240 }
+        }
+      }
+    },
+    "signature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "verified", "warnings"],
+      "properties": {
+        "mode": { "enum": ["signed", "unsigned-dev"] },
+        "keyId": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,119}$" },
+        "verified": { "type": "boolean" },
+        "warnings": {
+          "type": "array",
+          "maxItems": 20,
+          "items": { "type": "string", "maxLength": 500 }
+        }
+      }
+    },
+    "conformance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["checks"],
+      "properties": {
+        "checks": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 20,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "passed", "detail"],
+            "properties": {
+              "name": { "enum": ["module-contract", "package-verification", "trusted-signature"] },
+              "passed": { "type": "boolean" },
+              "detail": { "type": "string", "minLength": 1, "maxLength": 500 }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "capability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "reason"],
+      "properties": {
+        "name": { "enum": ["config.get", "http.request", "notifications.emit", "storage.get", "storage.set", "storage.delete", "audit.annotate"] },
+        "reason": { "type": "string", "minLength": 1, "maxLength": 200 }
+      }
+    },
+    "httpAccessScope": {
+      "$ref": "http-access.v1.schema.json"
+    },
+    "permission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["action", "label", "risk"],
+      "properties": {
+        "action": { "type": "string", "pattern": "^[a-z][a-z0-9]*(?:[.:_-][a-z0-9]+)*$" },
+        "label": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "risk": { "enum": ["read", "write", "admin"] },
+        "description": { "type": "string", "maxLength": 200 }
+      }
+    },
+    "manifestSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "id", "slug", "name", "description", "icon", "category", "version", "publisher", "compatibility", "capabilities", "permissions"],
+      "properties": {
+        "schemaVersion": { "const": 1 },
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9]*(\\.[a-z][a-z0-9-]*)+$" },
+        "slug": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,63}$" },
+        "name": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "description": { "type": "string", "minLength": 1, "maxLength": 300 },
+        "icon": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "category": { "enum": ["servers", "media", "games", "network", "tools", "automation", "monitoring", "custom"] },
+        "version": { "type": "string", "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:[-+][0-9A-Za-z.-]+)?$" },
+        "publisher": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "compatibility": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["core", "hostApi", "uiApi"],
+          "properties": {
+            "core": { "type": "string" },
+            "hostApi": { "type": "string" },
+            "uiApi": { "type": "string" }
+          }
+        },
+        "capabilities": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/capability" } },
+        "httpAccess": { "type": "array", "minItems": 1, "maxItems": 32, "uniqueItems": true, "items": { "$ref": "#/$defs/httpAccessScope" } },
+        "permissions": { "type": "array", "minItems": 1, "maxItems": 32, "items": { "$ref": "#/$defs/permission" } },
+        "dataMigrations": { "type": "array", "maxItems": 32, "items": { "$ref": "data-migration.v1.schema.json" } }
+      }
+    },
+    "changelog": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["summary", "entries"],
+      "properties": {
+        "summary": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "entries": { "type": "array", "minItems": 1, "maxItems": 12, "uniqueItems": true, "items": { "type": "string", "minLength": 1, "maxLength": 300 } }
+      }
+    },
+    "hotUpdate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["compatibility", "preserves"],
+      "properties": {
+        "compatibility": { "const": "compatible" },
+        "preserves": { "type": "array", "minItems": 1, "maxItems": 16, "uniqueItems": true, "items": { "type": "string", "minLength": 1, "maxLength": 200 } }
+      }
+    }
+  }
+}
