@@ -11,6 +11,6 @@ devkit/packages/cli/templates/
 
 # Internal working documents: agent guidance and the first-party release
 # runbook. Kept on disk for development, not part of the published product.
-AGENTS.md
+/AGENTS.md
 internal/
 
