@@ -51,6 +51,85 @@ importers:
         specifier: workspace:*
         version: link:../sdk
 
+  plugins/official/network:
+    devDependencies:
+      '@nad/cli':
+        specifier: workspace:*
+        version: link:../../../devkit/packages/cli
+      '@nad/sdk':
+        specifier: workspace:*
+        version: link:../../../devkit/packages/sdk
+      '@nad/testkit':
+        specifier: workspace:*
+        version: link:../../../devkit/packages/testkit
+
+  plugins/official/proxmox:
+    devDependencies:
+      '@nad/cli':
+        specifier: workspace:*
+        version: link:../../../devkit/packages/cli
+      '@nad/sdk':
+        specifier: workspace:*
+        version: link:../../../devkit/packages/sdk
+      '@nad/testkit':
+        specifier: workspace:*
+        version: link:../../../devkit/packages/testkit
+
+  plugins/official/proxmox/references/proxmox-guest-controls:
+    devDependencies:
+      '@nad/cli':
+        specifier: workspace:*
+        version: link:../../../../../devkit/packages/cli
+      '@nad/sdk':
+        specifier: workspace:*
+        version: link:../../../../../devkit/packages/sdk
+      '@nad/testkit':
+        specifier: workspace:*
+        version: link:../../../../../devkit/packages/testkit
+
+  plugins/official/proxmox/references/proxmox-v2:
+    dependencies:
+      '@nad/sdk':
+        specifier: workspace:*
+        version: link:../../../../../devkit/packages/sdk
+    devDependencies:
+      '@nad/cli':
+        specifier: workspace:*
+        version: link:../../../../../devkit/packages/cli
+      '@nad/testkit':
+        specifier: workspace:*
+        version: link:../../../../../devkit/packages/testkit
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.7(@types/node@20.19.43)
+
+  plugins/official/system-monitor:
+    devDependencies:
+      '@nad/cli':
+        specifier: workspace:*
+        version: link:../../../devkit/packages/cli
+      '@nad/sdk':
+        specifier: workspace:*
+        version: link:../../../devkit/packages/sdk
+      '@nad/testkit':
+        specifier: workspace:*
+        version: link:../../../devkit/packages/testkit
+
+  plugins/official/unraid:
+    devDependencies:
+      '@nad/cli':
+        specifier: workspace:*
+        version: link:../../../devkit/packages/cli
+      '@nad/sdk':
+        specifier: workspace:*
+        version: link:../../../devkit/packages/sdk
+      '@nad/testkit':
+        specifier: workspace:*
+        version: link:../../../devkit/packages/testkit
+
 packages:
 
   '@apidevtools/json-schema-ref-parser@11.9.3':

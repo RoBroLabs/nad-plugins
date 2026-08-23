@@ -1,0 +1,5 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema", "type": "object", "additionalProperties": false,
+  "required": ["profile", "guests"],
+  "properties": { "profile": { "type": "string", "maxLength": 80 }, "guests": { "type": "array", "maxItems": 256, "items": { "type": "object" } } }
+}

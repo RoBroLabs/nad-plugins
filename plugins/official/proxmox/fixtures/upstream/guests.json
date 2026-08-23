@@ -1,0 +1,31 @@
+{
+  "data": [
+    {
+      "id": "qemu/101",
+      "type": "qemu",
+      "vmid": 101,
+      "name": "disposable-fixture-vm",
+      "node": "pve-fixture",
+      "status": "running",
+      "cpu": 0.1,
+      "maxcpu": 2,
+      "mem": 1073741824,
+      "maxmem": 2147483648,
+      "disk": 4294967296,
+      "maxdisk": 8589934592,
+      "netin": 2048,
+      "netout": 4096,
+      "uptime": 600
+    },
+    {
+      "id": "lxc/202",
+      "type": "lxc",
+      "vmid": 202,
+      "name": "fixture-container",
+      "node": "pve-fixture",
+      "status": "stopped",
+      "maxcpu": 2,
+      "maxmem": 1073741824
+    }
+  ]
+}

@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "id": "dev.robrolabs.system-monitor",
+  "slug": "system-monitor",
+  "name": "System Monitor",
+  "description": "Read-only host reachability and Node Exporter resource metrics for homelab systems.",
+  "icon": "activity",
+  "category": "monitoring",
+  "version": "1.0.3",
+  "publisher": "Robro Labs",
+  "compatibility": {
+    "core": ">=0.2.2 <1.0.0",
+    "hostApi": "1.x",
+    "uiApi": "1.x"
+  },
+  "capabilities": [
+    {
+      "name": "config.get",
+      "reason": "Read administrator-defined host inventory and metric collection settings."
+    },
+    {
+      "name": "http.request",
+      "reason": "Fetch bounded Node Exporter metrics from configured hosts through NAD core."
+    },
+    {
+      "name": "notifications.emit",
+      "reason": "Send administrator-requested test events through NAD core-owned notification channels."
+    }
+  ],
+  "httpAccess": [
+    {
+      "scheme": "http",
+      "hostConfig": "hosts",
+      "portConfig": "node_exporter_port",
+      "path": "/metrics",
+      "methods": ["GET"]
+    },
+    {
+      "scheme": "http",
+      "hostConfig": "hosts",
+      "port": 80,
+      "path": "/",
+      "methods": ["GET"]
+    }
+  ],
+  "permissions": [
+    {
+      "action": "view",
+      "label": "View system metrics",
+      "risk": "read",
+      "description": "View host status, uptime, CPU, memory, and disk usage."
+    },
+    {
+      "action": "notify",
+      "label": "Send test notification",
+      "risk": "admin",
+      "description": "Send an explicit System Monitor test event through NAD core notification channels."
+    }
+  ],
+  "configSchema": [
+    {
+      "key": "hosts",
+      "label": "Hosts",
+      "type": "text",
+      "required": true,
+      "placeholder": "server1|192.168.1.10,server2|192.168.1.11",
+      "description": "Comma-separated name|host entries. Names must be unique."
+    },
+    {
+      "key": "check_method",
+      "label": "Check method",
+      "type": "select",
+      "required": true,
+      "defaultValue": "node_exporter",
+      "description": "Node Exporter provides resource metrics. HTTP reachability reports online/offline only.",
+      "options": [
+        { "label": "Node Exporter", "value": "node_exporter" },
+        { "label": "HTTP reachability", "value": "http" }
+      ]
+    },
+    {
+      "key": "node_exporter_port",
+      "label": "Node Exporter port",
+      "type": "number",
+      "required": false,
+      "defaultValue": 9100,
+      "min": 1,
+      "max": 65535,
+      "description": "Shared Node Exporter port for configured hosts."
+    }
+  ],
+  "entrypoints": {
+    "summary": {
+      "method": "GET",
+      "kind": "query",
+      "permission": "view",
+      "handler": "summary",
+      "requestSchema": "schemas/endpoints/summary-input.json",
+      "responseSchema": "schemas/endpoints/summary-output.json",
+      "timeoutClass": "short",
+      "maxRequestBytes": 1024,
+      "maxResponseBytes": 262144
+    },
+    "metrics": {
+      "method": "GET",
+      "kind": "query",
+      "permission": "view",
+      "handler": "metrics",
+      "requestSchema": "schemas/endpoints/metrics-input.json",
+      "responseSchema": "schemas/endpoints/metrics-output.json",
+      "timeoutClass": "standard",
+      "maxRequestBytes": 1024,
+      "maxResponseBytes": 262144
+    },
+    "notification-test": {
+      "method": "POST",
+      "kind": "mutation",
+      "permission": "notify",
+      "handler": "sendTestNotification",
+      "requestSchema": "schemas/endpoints/notification-test-input.json",
+      "responseSchema": "schemas/endpoints/notification-test-output.json",
+      "auditAction": "system_monitor_notification_test",
+      "timeoutClass": "short",
+      "maxRequestBytes": 1024,
+      "maxResponseBytes": 4096
+    }
+  }
+}

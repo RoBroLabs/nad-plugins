@@ -2,6 +2,7 @@
   "name": "@nad/module-__MODULE_SLUG__",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@9.15.0",
   "description": "__MODULE_NAME__ read-only NAD Module.",
   "license": "AGPL-3.0-only",
   "type": "module",

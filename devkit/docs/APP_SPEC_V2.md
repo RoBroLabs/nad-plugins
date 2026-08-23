@@ -123,6 +123,13 @@ rate/size limits, and can revoke access immediately. A removed surface or
 profile renders a safe unavailable state; an existing Workspace reference does
 not preserve data access.
 
+Core renders the connection selector in the surrounding isolated-surface
+header. A sandbox surface receives the selected profile's public `id` and name
+only in `surface.context`; it can display that state but must not implement a
+second selector or attempt to choose a profile ID. Starter templates include a
+small responsive baseline with loading, empty, degraded, failed and revoked
+states, theme handling and bounded resize requests.
+
 `execution.requestedMode: "trusted"` is a request, not authority. Trusted mode
 depends on the administrator policy and a valid exact-artifact-digest review
 attestation for that release. Unreviewed manual uploads remain sandboxed unless
@@ -153,9 +160,15 @@ nad addon create ./my-addon \
   --app-version ">=2.0.0 <3.0.0"
 
 nad check ./my-app
+nad dev ./my-app --once --scenario default
 nad pack ./my-app --out ./dist
 nad verify ./dist/my-app-0.1.0.nadmod
 ```
+
+For schema-v2 packages, `nad dev --once` is a fixture-only preflight: it runs
+the selected App operation or Add-on binding with a fake named profile and no
+network access. Inspect the actual sandboxed surface after installing on a
+disposable NAD instance.
 
 `nad-module` remains a documented alias for v1 authoring and for the shared
 check/pack/verify commands. Schema dispatch comes from `manifest.json`; the CLI

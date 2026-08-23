@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "releasedAt": "2026-08-12",
+  "sourceDirectory": "plugins/official/unraid",
+  "license": "AGPL-3.0-only",
+  "sourceTag": "unraid-v1.0.0",
+  "changelog": {
+    "summary": "Add a portable read-only Unraid 7.2+ Module using the official GraphQL API and core-owned API-key injection.",
+    "entries": [
+      "Preserve the Unraid Module ID, slug, configuration keys, view permission, Page path, and Widget IDs.",
+      "Expose bounded host, API version, resource, array, parity, disk, share, Docker, and VM monitoring.",
+      "Keep the API key opaque to Module code and inject it only inside NAD core's exact /graphql POST scope.",
+      "Retain useful GraphQL data when sibling fields fail and report only sanitized error paths."
+    ]
+  },
+  "hotUpdate": {
+    "compatibility": "compatible",
+    "preserves": [
+      "module id dev.robrolabs.unraid",
+      "slug unraid",
+      "config keys server_host, scheme, port, api_key",
+      "permission action view",
+      "widget ids unraid-status, unraid-array, unraid-workloads",
+      "page path /"
+    ]
+  }
+}

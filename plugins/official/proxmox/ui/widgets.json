@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "widgets": [
+    {
+      "id": "node-overview",
+      "name": "Node Overview",
+      "description": "Bounded node health, CPU, memory, storage, and uptime.",
+      "defaultSize": { "w": 6, "h": 4 },
+      "minSize": { "w": 4, "h": 3 },
+      "maxSize": { "w": 12, "h": 8 },
+      "requiredConfig": ["api_url", "token_id", "token_secret"],
+      "source": { "endpoint": "nodes", "refreshIntervalMs": 15000 },
+      "body": [
+        {
+          "type": "table",
+          "rowsPath": "nodes",
+          "emptyText": "No Proxmox nodes are visible.",
+          "columns": [
+            { "key": "node", "label": "Node", "valuePath": "node" },
+            { "key": "status", "label": "Status", "valuePath": "status" },
+            { "key": "cpu", "label": "CPU %", "valuePath": "cpuPercent" },
+            { "key": "memory", "label": "Memory %", "valuePath": "memoryPercent" },
+            { "key": "storage", "label": "Local storage %", "valuePath": "storagePercent" },
+            { "key": "uptime", "label": "Uptime seconds", "valuePath": "uptimeSeconds" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "guest-list",
+      "name": "VMs & Containers",
+      "description": "Bounded QEMU and LXC guest inventory and state.",
+      "defaultSize": { "w": 8, "h": 5 },
+      "minSize": { "w": 4, "h": 3 },
+      "maxSize": { "w": 12, "h": 9 },
+      "requiredConfig": ["api_url", "token_id", "token_secret"],
+      "source": { "endpoint": "guests", "refreshIntervalMs": 10000 },
+      "body": [
+        {
+          "type": "table",
+          "rowsPath": "guests",
+          "emptyText": "No QEMU or LXC guests are visible.",
+          "columns": [
+            { "key": "vmid", "label": "VMID", "valuePath": "vmid" },
+            { "key": "name", "label": "Guest", "valuePath": "name" },
+            { "key": "type", "label": "Type", "valuePath": "typeLabel" },
+            { "key": "node", "label": "Node", "valuePath": "node" },
+            { "key": "status", "label": "Status", "valuePath": "status" },
+            { "key": "cpu", "label": "CPU %", "valuePath": "cpuPercent" },
+            { "key": "memory", "label": "Memory %", "valuePath": "memoryPercent" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "resource-summary",
+      "name": "Resource Summary",
+      "description": "Cluster inventory and aggregate resource utilisation.",
+      "defaultSize": { "w": 5, "h": 3 },
+      "minSize": { "w": 3, "h": 2 },
+      "maxSize": { "w": 8, "h": 5 },
+      "requiredConfig": ["api_url", "token_id", "token_secret"],
+      "source": { "endpoint": "summary", "refreshIntervalMs": 15000 },
+      "body": [
+        {
+          "type": "section",
+          "body": [
+            { "type": "status", "label": "Cluster", "valuePath": "statusLabel", "tonePath": "statusTone" },
+            { "type": "metric", "label": "Online nodes", "valuePath": "onlineNodes" },
+            { "type": "metric", "label": "Running guests", "valuePath": "runningGuests" },
+            { "type": "metric", "label": "CPU", "valuePath": "cpuPercent", "unit": "%" },
+            { "type": "metric", "label": "Memory", "valuePath": "memoryPercent", "unit": "%" },
+            { "type": "metric", "label": "Storage", "valuePath": "storagePercent", "unit": "%" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "task-log",
+      "name": "Recent Tasks",
+      "description": "The most recent bounded Proxmox task outcomes.",
+      "defaultSize": { "w": 7, "h": 4 },
+      "minSize": { "w": 4, "h": 3 },
+      "maxSize": { "w": 12, "h": 8 },
+      "requiredConfig": ["api_url", "token_id", "token_secret"],
+      "source": { "endpoint": "tasks", "refreshIntervalMs": 10000 },
+      "body": [
+        {
+          "type": "table",
+          "rowsPath": "tasks",
+          "emptyText": "No recent Proxmox tasks are visible.",
+          "columns": [
+            { "key": "type", "label": "Task", "valuePath": "type" },
+            { "key": "node", "label": "Node", "valuePath": "node" },
+            { "key": "guest", "label": "Guest", "valuePath": "guestId" },
+            { "key": "status", "label": "Status", "valuePath": "status" },
+            { "key": "result", "label": "Result", "valuePath": "exitStatus" },
+            { "key": "user", "label": "User", "valuePath": "user" }
+          ]
+        }
+      ]
+    }
+  ]
+}

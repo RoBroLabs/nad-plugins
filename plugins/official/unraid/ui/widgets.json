@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "widgets": [
+    {
+      "id": "unraid-status",
+      "name": "Unraid Status",
+      "description": "Host, API, CPU, memory, and uptime status.",
+      "defaultSize": { "w": 4, "h": 3 },
+      "minSize": { "w": 3, "h": 2 },
+      "maxSize": { "w": 8, "h": 5 },
+      "requiredConfig": ["server_host", "scheme", "port", "api_key"],
+      "source": {
+        "endpoint": "summary",
+        "refreshIntervalMs": 30000
+      },
+      "body": [
+        {
+          "type": "section",
+          "body": [
+            { "type": "status", "label": "Server", "valuePath": "statusLabel", "tonePath": "statusTone" },
+            { "type": "metric", "label": "CPU", "valuePath": "cpuUsagePercent", "unit": "%" },
+            { "type": "metric", "label": "Memory", "valuePath": "memoryUsagePercent", "unit": "%" },
+            {
+              "type": "keyValue",
+              "items": [
+                { "label": "Host", "valuePath": "hostname" },
+                { "label": "Unraid", "valuePath": "unraidVersion" },
+                { "label": "API", "valuePath": "apiVersion" },
+                { "label": "Uptime (seconds)", "valuePath": "uptimeSeconds" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "unraid-array",
+      "name": "Unraid Array",
+      "description": "Array state and aggregate capacity.",
+      "defaultSize": { "w": 4, "h": 3 },
+      "minSize": { "w": 3, "h": 2 },
+      "maxSize": { "w": 8, "h": 5 },
+      "requiredConfig": ["server_host", "scheme", "port", "api_key"],
+      "source": {
+        "endpoint": "summary",
+        "refreshIntervalMs": 30000
+      },
+      "body": [
+        {
+          "type": "section",
+          "body": [
+            { "type": "status", "label": "Array", "valuePath": "arrayState", "tonePath": "statusTone" },
+            { "type": "metric", "label": "Used", "valuePath": "arrayUsagePercent", "unit": "%" },
+            {
+              "type": "keyValue",
+              "items": [
+                { "label": "Total bytes", "valuePath": "arrayTotalBytes" },
+                { "label": "Used bytes", "valuePath": "arrayUsedBytes" },
+                { "label": "Free bytes", "valuePath": "arrayFreeBytes" },
+                { "label": "Partial data", "valuePath": "partial" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "unraid-workloads",
+      "name": "Unraid Workloads",
+      "description": "Running Docker container and virtual-machine totals.",
+      "defaultSize": { "w": 4, "h": 3 },
+      "minSize": { "w": 3, "h": 2 },
+      "maxSize": { "w": 8, "h": 5 },
+      "requiredConfig": ["server_host", "scheme", "port", "api_key"],
+      "source": {
+        "endpoint": "summary",
+        "refreshIntervalMs": 30000
+      },
+      "body": [
+        {
+          "type": "section",
+          "body": [
+            { "type": "status", "label": "Server", "valuePath": "statusLabel", "tonePath": "statusTone" },
+            { "type": "metric", "label": "Containers running", "valuePath": "dockerRunning" },
+            { "type": "metric", "label": "VMs running", "valuePath": "vmRunning" },
+            {
+              "type": "keyValue",
+              "items": [
+                { "label": "Containers total", "valuePath": "dockerTotal" },
+                { "label": "VMs total", "valuePath": "vmTotal" },
+                { "label": "Last refreshed", "valuePath": "refreshedAt" }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

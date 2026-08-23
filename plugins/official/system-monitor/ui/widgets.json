@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "widgets": [
+    {
+      "id": "uptime-status",
+      "name": "Uptime Status",
+      "description": "Traffic-light host availability summary.",
+      "defaultSize": { "w": 4, "h": 3 },
+      "minSize": { "w": 3, "h": 2 },
+      "maxSize": { "w": 6, "h": 4 },
+      "requiredConfig": ["hosts", "check_method"],
+      "source": {
+        "endpoint": "summary",
+        "refreshIntervalMs": 15000
+      },
+      "body": [
+        {
+          "type": "section",
+          "body": [
+            { "type": "metric", "label": "Online", "valuePath": "onlineHosts" },
+            { "type": "metric", "label": "Total", "valuePath": "totalHosts" },
+            { "type": "status", "label": "State", "valuePath": "status", "tonePath": "statusTone" },
+            {
+              "type": "keyValue",
+              "items": [
+                { "label": "Mode", "valuePath": "checkMethodLabel" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "host-grid",
+      "name": "Host Grid",
+      "description": "Host status, uptime, CPU, memory, and disk usage.",
+      "defaultSize": { "w": 8, "h": 5 },
+      "minSize": { "w": 4, "h": 3 },
+      "maxSize": { "w": 12, "h": 9 },
+      "requiredConfig": ["hosts", "check_method"],
+      "source": {
+        "endpoint": "metrics",
+        "refreshIntervalMs": 15000
+      },
+      "body": [
+        {
+          "type": "table",
+          "rowsPath": "hosts",
+          "emptyText": "No hosts configured.",
+          "columns": [
+            { "key": "name", "label": "Host", "valuePath": "name" },
+            { "key": "status", "label": "Status", "valuePath": "status" },
+            { "key": "cpu", "label": "CPU", "valuePath": "cpuPercent" },
+            { "key": "memory", "label": "Memory", "valuePath": "memoryPercent" },
+            { "key": "disk", "label": "Disk", "valuePath": "diskPercent" }
+          ]
+        }
+      ]
+    }
+  ]
+}

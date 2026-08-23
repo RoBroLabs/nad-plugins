@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "releasedAt": "2026-08-12",
+  "sourceDirectory": "plugins/official/network",
+  "license": "AGPL-3.0-only",
+  "sourceTag": "network-v1.0.0",
+  "changelog": {
+    "summary": "Restore Network as a portable first-party Pi-hole Module with brokered credentials, v5/v6 compatibility, dual-instance resilience, and audited blocking controls.",
+    "entries": [
+      "Preserve the Network Module ID, slug, configuration keys, permissions, Page path, and Widget IDs.",
+      "Support exact Pi-hole v6 session, summary, and DNS blocking routes plus legacy v5 admin/api.php commands.",
+      "Keep credentials opaque to Module code and inject them only inside NAD core's signed HTTP scopes.",
+      "Report partial dual-instance failures and verify the observed final state of every blocking mutation."
+    ]
+  },
+  "hotUpdate": {
+    "compatibility": "compatible",
+    "preserves": [
+      "module id dev.robrolabs.network",
+      "slug network",
+      "config keys pihole_url, pihole_api_key, pihole_api_version, pihole2_url, pihole2_api_key",
+      "permission actions view and manage_dns",
+      "widget ids dns-stats and dns-toggle",
+      "page path /"
+    ]
+  }
+}

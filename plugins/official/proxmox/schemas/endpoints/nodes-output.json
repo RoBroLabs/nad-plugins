@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Proxmox nodes and storage response",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["nodes", "storage", "unavailableStorageNodes", "refreshedAt"],
+  "properties": {
+    "nodes": { "type": "array", "maxItems": 32, "items": { "type": "object", "additionalProperties": true } },
+    "storage": { "type": "array", "maxItems": 256, "items": { "type": "object", "additionalProperties": true } },
+    "unavailableStorageNodes": { "type": "integer", "minimum": 0, "maximum": 32 },
+    "refreshedAt": { "type": "string", "minLength": 20, "maxLength": 40 }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Proxmox configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["api_url", "token_id", "token_secret", "verify_ssl"],
+  "properties": {
+    "api_url": { "type": "string", "minLength": 1, "maxLength": 512 },
+    "token_id": { "type": "string", "minLength": 3, "maxLength": 256, "pattern": "^[A-Za-z0-9@!._-]+$" },
+    "token_secret": { "type": "string", "minLength": 1, "maxLength": 1024 },
+    "verify_ssl": { "type": "boolean" }
+  }
+}

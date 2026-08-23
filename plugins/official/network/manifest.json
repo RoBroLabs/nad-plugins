@@ -1,0 +1,377 @@
+{
+  "schemaVersion": 1,
+  "id": "dev.robrolabs.network",
+  "slug": "network",
+  "name": "Network",
+  "description": "Monitor DNS activity and manage blocking across one or two Pi-hole instances.",
+  "icon": "network",
+  "category": "network",
+  "version": "1.0.0",
+  "publisher": "Robro Labs",
+  "compatibility": {
+    "core": ">=0.2.7 <1.0.0",
+    "hostApi": "1.x",
+    "uiApi": "1.x"
+  },
+  "capabilities": [
+    {
+      "name": "config.get",
+      "reason": "Read administrator-defined Pi-hole endpoints, API generation, and opaque credential presence."
+    },
+    {
+      "name": "http.request",
+      "reason": "Use exact brokered Pi-hole API routes without exposing credentials to Module code."
+    },
+    {
+      "name": "audit.annotate",
+      "reason": "Attach safe per-target outcomes to every DNS blocking mutation audit event."
+    }
+  ],
+  "httpAccess": [
+    {
+      "scheme": "http",
+      "hostConfig": "pihole_url",
+      "path": "/api/auth",
+      "methods": ["POST"],
+      "effect": "read",
+      "requestBodyPolicy": "credential-only",
+      "credential": { "config": "pihole_api_key", "location": "json-body", "name": "password" }
+    },
+    {
+      "scheme": "http",
+      "hostConfig": "pihole_url",
+      "path": "/api/auth",
+      "methods": ["DELETE"],
+      "effect": "read",
+      "requestBodyPolicy": "session-cleanup",
+      "allowedHeaders": ["x-ftl-sid"]
+    },
+    {
+      "scheme": "http",
+      "hostConfig": "pihole_url",
+      "path": "/api/stats/summary",
+      "methods": ["GET"],
+      "effect": "read",
+      "allowedHeaders": ["x-ftl-sid"]
+    },
+    {
+      "scheme": "http",
+      "hostConfig": "pihole_url",
+      "path": "/api/dns/blocking",
+      "methods": ["GET"],
+      "effect": "read",
+      "allowedHeaders": ["x-ftl-sid"]
+    },
+    {
+      "scheme": "http",
+      "hostConfig": "pihole_url",
+      "path": "/api/dns/blocking",
+      "methods": ["POST"],
+      "effect": "write",
+      "allowedHeaders": ["x-ftl-sid"]
+    },
+    {
+      "scheme": "http",
+      "hostConfig": "pihole_url",
+      "path": "/admin/api.php",
+      "methods": ["GET"],
+      "effect": "read",
+      "queryParameters": ["summaryRaw", "status"],
+      "credential": { "config": "pihole_api_key", "location": "query", "name": "auth" }
+    },
+    {
+      "scheme": "http",
+      "hostConfig": "pihole_url",
+      "path": "/admin/api.php",
+      "methods": ["GET"],
+      "effect": "write",
+      "queryParameters": ["enable", "disable"],
+      "credential": { "config": "pihole_api_key", "location": "query", "name": "auth" }
+    },
+    {
+      "scheme": "https",
+      "hostConfig": "pihole_url",
+      "path": "/api/auth",
+      "methods": ["POST"],
+      "effect": "read",
+      "requestBodyPolicy": "credential-only",
+      "credential": { "config": "pihole_api_key", "location": "json-body", "name": "password" }
+    },
+    {
+      "scheme": "https",
+      "hostConfig": "pihole_url",
+      "path": "/api/auth",
+      "methods": ["DELETE"],
+      "effect": "read",
+      "requestBodyPolicy": "session-cleanup",
+      "allowedHeaders": ["x-ftl-sid"]
+    },
+    {
+      "scheme": "https",
+      "hostConfig": "pihole_url",
+      "path": "/api/stats/summary",
+      "methods": ["GET"],
+      "effect": "read",
+      "allowedHeaders": ["x-ftl-sid"]
+    },
+    {
+      "scheme": "https",
+      "hostConfig": "pihole_url",
+      "path": "/api/dns/blocking",
+      "methods": ["GET"],
+      "effect": "read",
+      "allowedHeaders": ["x-ftl-sid"]
+    },
+    {
+      "scheme": "https",
+      "hostConfig": "pihole_url",
+      "path": "/api/dns/blocking",
+      "methods": ["POST"],
+      "effect": "write",
+      "allowedHeaders": ["x-ftl-sid"]
+    },
+    {
+      "scheme": "https",
+      "hostConfig": "pihole_url",
+      "path": "/admin/api.php",
+      "methods": ["GET"],
+      "effect": "read",
+      "queryParameters": ["summaryRaw", "status"],
+      "credential": { "config": "pihole_api_key", "location": "query", "name": "auth" }
+    },
+    {
+      "scheme": "https",
+      "hostConfig": "pihole_url",
+      "path": "/admin/api.php",
+      "methods": ["GET"],
+      "effect": "write",
+      "queryParameters": ["enable", "disable"],
+      "credential": { "config": "pihole_api_key", "location": "query", "name": "auth" }
+    },
+    {
+      "scheme": "http",
+      "hostConfig": "pihole2_url",
+      "path": "/api/auth",
+      "methods": ["POST"],
+      "effect": "read",
+      "requestBodyPolicy": "credential-only",
+      "credential": { "config": "pihole2_api_key", "location": "json-body", "name": "password" }
+    },
+    {
+      "scheme": "http",
+      "hostConfig": "pihole2_url",
+      "path": "/api/auth",
+      "methods": ["DELETE"],
+      "effect": "read",
+      "requestBodyPolicy": "session-cleanup",
+      "allowedHeaders": ["x-ftl-sid"]
+    },
+    {
+      "scheme": "http",
+      "hostConfig": "pihole2_url",
+      "path": "/api/stats/summary",
+      "methods": ["GET"],
+      "effect": "read",
+      "allowedHeaders": ["x-ftl-sid"]
+    },
+    {
+      "scheme": "http",
+      "hostConfig": "pihole2_url",
+      "path": "/api/dns/blocking",
+      "methods": ["GET"],
+      "effect": "read",
+      "allowedHeaders": ["x-ftl-sid"]
+    },
+    {
+      "scheme": "http",
+      "hostConfig": "pihole2_url",
+      "path": "/api/dns/blocking",
+      "methods": ["POST"],
+      "effect": "write",
+      "allowedHeaders": ["x-ftl-sid"]
+    },
+    {
+      "scheme": "http",
+      "hostConfig": "pihole2_url",
+      "path": "/admin/api.php",
+      "methods": ["GET"],
+      "effect": "read",
+      "queryParameters": ["summaryRaw", "status"],
+      "credential": { "config": "pihole2_api_key", "location": "query", "name": "auth" }
+    },
+    {
+      "scheme": "http",
+      "hostConfig": "pihole2_url",
+      "path": "/admin/api.php",
+      "methods": ["GET"],
+      "effect": "write",
+      "queryParameters": ["enable", "disable"],
+      "credential": { "config": "pihole2_api_key", "location": "query", "name": "auth" }
+    },
+    {
+      "scheme": "https",
+      "hostConfig": "pihole2_url",
+      "path": "/api/auth",
+      "methods": ["POST"],
+      "effect": "read",
+      "requestBodyPolicy": "credential-only",
+      "credential": { "config": "pihole2_api_key", "location": "json-body", "name": "password" }
+    },
+    {
+      "scheme": "https",
+      "hostConfig": "pihole2_url",
+      "path": "/api/auth",
+      "methods": ["DELETE"],
+      "effect": "read",
+      "requestBodyPolicy": "session-cleanup",
+      "allowedHeaders": ["x-ftl-sid"]
+    },
+    {
+      "scheme": "https",
+      "hostConfig": "pihole2_url",
+      "path": "/api/stats/summary",
+      "methods": ["GET"],
+      "effect": "read",
+      "allowedHeaders": ["x-ftl-sid"]
+    },
+    {
+      "scheme": "https",
+      "hostConfig": "pihole2_url",
+      "path": "/api/dns/blocking",
+      "methods": ["GET"],
+      "effect": "read",
+      "allowedHeaders": ["x-ftl-sid"]
+    },
+    {
+      "scheme": "https",
+      "hostConfig": "pihole2_url",
+      "path": "/api/dns/blocking",
+      "methods": ["POST"],
+      "effect": "write",
+      "allowedHeaders": ["x-ftl-sid"]
+    },
+    {
+      "scheme": "https",
+      "hostConfig": "pihole2_url",
+      "path": "/admin/api.php",
+      "methods": ["GET"],
+      "effect": "read",
+      "queryParameters": ["summaryRaw", "status"],
+      "credential": { "config": "pihole2_api_key", "location": "query", "name": "auth" }
+    },
+    {
+      "scheme": "https",
+      "hostConfig": "pihole2_url",
+      "path": "/admin/api.php",
+      "methods": ["GET"],
+      "effect": "write",
+      "queryParameters": ["enable", "disable"],
+      "credential": { "config": "pihole2_api_key", "location": "query", "name": "auth" }
+    }
+  ],
+  "permissions": [
+    {
+      "action": "view",
+      "label": "View DNS status",
+      "risk": "read",
+      "description": "View Pi-hole status and aggregate DNS statistics."
+    },
+    {
+      "action": "manage_dns",
+      "label": "Manage DNS blocking",
+      "risk": "write",
+      "description": "Enable or disable blocking on every configured Pi-hole."
+    }
+  ],
+  "configSchema": [
+    {
+      "key": "pihole_url",
+      "label": "Primary Pi-hole URL",
+      "type": "url",
+      "required": true,
+      "placeholder": "https://pihole.example.com",
+      "description": "Primary Pi-hole root URL. Standard /admin and /api URLs are normalized safely."
+    },
+    {
+      "key": "pihole_api_key",
+      "label": "Primary Pi-hole credential",
+      "type": "secret",
+      "required": true,
+      "description": "Pi-hole v6 application password or legacy v5 API token. Core encrypts and injects it."
+    },
+    {
+      "key": "pihole_api_version",
+      "label": "Pi-hole API version",
+      "type": "select",
+      "required": true,
+      "defaultValue": "v6",
+      "description": "Use v6 for current Pi-hole releases or v5 for the legacy admin/api.php API.",
+      "options": [
+        { "label": "Pi-hole v6 (current)", "value": "v6" },
+        { "label": "Pi-hole v5 (legacy)", "value": "v5" }
+      ]
+    },
+    {
+      "key": "pihole2_url",
+      "label": "Secondary Pi-hole URL",
+      "type": "url",
+      "required": false,
+      "placeholder": "https://pihole2.example.com",
+      "description": "Optional redundant Pi-hole. Configure both secondary fields or leave both empty."
+    },
+    {
+      "key": "pihole2_api_key",
+      "label": "Secondary Pi-hole credential",
+      "type": "secret",
+      "required": false,
+      "description": "Credential matching the selected API generation for the secondary Pi-hole."
+    }
+  ],
+  "entrypoints": {
+    "summary": {
+      "method": "GET",
+      "kind": "query",
+      "permission": "view",
+      "handler": "summary",
+      "requestSchema": "schemas/endpoints/summary-input.json",
+      "responseSchema": "schemas/endpoints/summary-output.json",
+      "timeoutClass": "standard",
+      "maxRequestBytes": 1024,
+      "maxResponseBytes": 32768
+    },
+    "status": {
+      "method": "GET",
+      "kind": "query",
+      "permission": "view",
+      "handler": "status",
+      "requestSchema": "schemas/endpoints/status-input.json",
+      "responseSchema": "schemas/endpoints/status-output.json",
+      "timeoutClass": "standard",
+      "maxRequestBytes": 1024,
+      "maxResponseBytes": 32768
+    },
+    "stats": {
+      "method": "GET",
+      "kind": "query",
+      "permission": "view",
+      "handler": "stats",
+      "requestSchema": "schemas/endpoints/stats-input.json",
+      "responseSchema": "schemas/endpoints/stats-output.json",
+      "timeoutClass": "standard",
+      "maxRequestBytes": 1024,
+      "maxResponseBytes": 65536
+    },
+    "blocking": {
+      "method": "POST",
+      "kind": "mutation",
+      "permission": "manage_dns",
+      "handler": "setBlocking",
+      "requestSchema": "schemas/endpoints/blocking-input.json",
+      "responseSchema": "schemas/endpoints/blocking-output.json",
+      "auditAction": "network_dns_blocking_change",
+      "timeoutClass": "action",
+      "maxRequestBytes": 1024,
+      "maxResponseBytes": 32768
+    }
+  }
+}

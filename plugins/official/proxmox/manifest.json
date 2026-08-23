@@ -1,0 +1,219 @@
+{
+  "schemaVersion": 1,
+  "id": "dev.robrolabs.proxmox",
+  "slug": "proxmox",
+  "name": "Proxmox",
+  "description": "Monitor Proxmox nodes, guests, storage, and tasks, with audited guest power controls.",
+  "icon": "server-cog",
+  "category": "servers",
+  "version": "1.0.2",
+  "publisher": "Robro Labs",
+  "compatibility": {
+    "core": ">=0.2.7 <1.0.0",
+    "hostApi": "1.x",
+    "uiApi": "1.x"
+  },
+  "capabilities": [
+    {
+      "name": "config.get",
+      "reason": "Read the administrator-defined HTTPS API URL, token identity, and opaque secret presence."
+    },
+    {
+      "name": "http.request",
+      "reason": "Use narrowly scoped, core-brokered Proxmox API requests with core-injected API-token authentication."
+    },
+    {
+      "name": "audit.annotate",
+      "reason": "Attach safe guest-action task outcomes to NAD core audit records."
+    }
+  ],
+  "httpAccess": [
+    {
+      "scheme": "https",
+      "hostConfig": "api_url",
+      "path": "/api2/json/version",
+      "methods": ["GET"],
+      "effect": "read",
+      "credential": { "config": "token_secret", "location": "header", "name": "Authorization", "prefix": "PVEAPIToken=", "publicConfig": "token_id", "separator": "=" },
+      "tlsVerifyConfig": "verify_ssl"
+    },
+    {
+      "scheme": "https",
+      "hostConfig": "api_url",
+      "path": "/api2/json/nodes",
+      "methods": ["GET"],
+      "effect": "read",
+      "credential": { "config": "token_secret", "location": "header", "name": "Authorization", "prefix": "PVEAPIToken=", "publicConfig": "token_id", "separator": "=" },
+      "tlsVerifyConfig": "verify_ssl"
+    },
+    {
+      "scheme": "https",
+      "hostConfig": "api_url",
+      "path": "/api2/json/cluster/resources",
+      "methods": ["GET"],
+      "effect": "read",
+      "queryParameters": ["type"],
+      "credential": { "config": "token_secret", "location": "header", "name": "Authorization", "prefix": "PVEAPIToken=", "publicConfig": "token_id", "separator": "=" },
+      "tlsVerifyConfig": "verify_ssl"
+    },
+    {
+      "scheme": "https",
+      "hostConfig": "api_url",
+      "path": "/api2/json/cluster/tasks",
+      "methods": ["GET"],
+      "effect": "read",
+      "credential": { "config": "token_secret", "location": "header", "name": "Authorization", "prefix": "PVEAPIToken=", "publicConfig": "token_id", "separator": "=" },
+      "tlsVerifyConfig": "verify_ssl"
+    },
+    {
+      "scheme": "https",
+      "hostConfig": "api_url",
+      "path": "/api2/json/nodes/{node}/qemu/{vmid}/status/start",
+      "methods": ["POST"],
+      "effect": "write",
+      "pathParameters": { "node": "segment", "vmid": "integer" },
+      "credential": { "config": "token_secret", "location": "header", "name": "Authorization", "prefix": "PVEAPIToken=", "publicConfig": "token_id", "separator": "=" },
+      "tlsVerifyConfig": "verify_ssl"
+    },
+    {
+      "scheme": "https",
+      "hostConfig": "api_url",
+      "path": "/api2/json/nodes/{node}/qemu/{vmid}/status/stop",
+      "methods": ["POST"],
+      "effect": "write",
+      "pathParameters": { "node": "segment", "vmid": "integer" },
+      "credential": { "config": "token_secret", "location": "header", "name": "Authorization", "prefix": "PVEAPIToken=", "publicConfig": "token_id", "separator": "=" },
+      "tlsVerifyConfig": "verify_ssl"
+    },
+    {
+      "scheme": "https",
+      "hostConfig": "api_url",
+      "path": "/api2/json/nodes/{node}/qemu/{vmid}/status/reboot",
+      "methods": ["POST"],
+      "effect": "write",
+      "pathParameters": { "node": "segment", "vmid": "integer" },
+      "credential": { "config": "token_secret", "location": "header", "name": "Authorization", "prefix": "PVEAPIToken=", "publicConfig": "token_id", "separator": "=" },
+      "tlsVerifyConfig": "verify_ssl"
+    },
+    {
+      "scheme": "https",
+      "hostConfig": "api_url",
+      "path": "/api2/json/nodes/{node}/lxc/{vmid}/status/start",
+      "methods": ["POST"],
+      "effect": "write",
+      "pathParameters": { "node": "segment", "vmid": "integer" },
+      "credential": { "config": "token_secret", "location": "header", "name": "Authorization", "prefix": "PVEAPIToken=", "publicConfig": "token_id", "separator": "=" },
+      "tlsVerifyConfig": "verify_ssl"
+    },
+    {
+      "scheme": "https",
+      "hostConfig": "api_url",
+      "path": "/api2/json/nodes/{node}/lxc/{vmid}/status/stop",
+      "methods": ["POST"],
+      "effect": "write",
+      "pathParameters": { "node": "segment", "vmid": "integer" },
+      "credential": { "config": "token_secret", "location": "header", "name": "Authorization", "prefix": "PVEAPIToken=", "publicConfig": "token_id", "separator": "=" },
+      "tlsVerifyConfig": "verify_ssl"
+    },
+    {
+      "scheme": "https",
+      "hostConfig": "api_url",
+      "path": "/api2/json/nodes/{node}/lxc/{vmid}/status/reboot",
+      "methods": ["POST"],
+      "effect": "write",
+      "pathParameters": { "node": "segment", "vmid": "integer" },
+      "credential": { "config": "token_secret", "location": "header", "name": "Authorization", "prefix": "PVEAPIToken=", "publicConfig": "token_id", "separator": "=" },
+      "tlsVerifyConfig": "verify_ssl"
+    }
+  ],
+  "permissions": [
+    {
+      "action": "view",
+      "label": "View Proxmox status",
+      "risk": "read",
+      "description": "View Proxmox nodes, QEMU and LXC guests, storage, and recent task outcomes."
+    },
+    {
+      "action": "start_stop",
+      "label": "Start, stop, or restart guests",
+      "risk": "write",
+      "description": "Request and audit bounded QEMU or LXC guest power operations."
+    },
+    {
+      "action": "console",
+      "label": "Console access (reserved)",
+      "risk": "admin",
+      "description": "Reserved for a future reviewed console integration; this release exposes no console endpoint."
+    }
+  ],
+  "configSchema": [
+    {
+      "key": "api_url",
+      "label": "Proxmox API URL",
+      "type": "url",
+      "required": true,
+      "placeholder": "https://proxmox.example.net:8006",
+      "description": "HTTPS root URL for the Proxmox API. The configured port is derived by NAD core."
+    },
+    {
+      "key": "token_id",
+      "label": "API token ID",
+      "type": "text",
+      "required": true,
+      "placeholder": "nad@pve!dashboard",
+      "description": "Public Proxmox token identity. Core combines it with the encrypted secret only inside the Authorization header."
+    },
+    {
+      "key": "token_secret",
+      "label": "API token secret",
+      "type": "secret",
+      "required": true,
+      "description": "Proxmox API token secret. NAD encrypts and injects it; Module code never receives plaintext."
+    },
+    {
+      "key": "verify_ssl",
+      "label": "Verify TLS certificate",
+      "type": "boolean",
+      "required": true,
+      "defaultValue": true,
+      "description": "Keep enabled unless the administrator has deliberately accepted a local TLS exception."
+    }
+  ],
+  "entrypoints": {
+    "overview": {
+      "method": "GET", "kind": "query", "permission": "view", "handler": "overview",
+      "requestSchema": "schemas/endpoints/overview-input.json", "responseSchema": "schemas/endpoints/overview-output.json",
+      "timeoutClass": "standard", "maxRequestBytes": 1024, "maxResponseBytes": 262144
+    },
+    "nodes": {
+      "method": "GET", "kind": "query", "permission": "view", "handler": "nodeOverview",
+      "requestSchema": "schemas/endpoints/nodes-input.json", "responseSchema": "schemas/endpoints/nodes-output.json",
+      "timeoutClass": "standard", "maxRequestBytes": 1024, "maxResponseBytes": 65536
+    },
+    "guests": {
+      "method": "GET", "kind": "query", "permission": "view", "handler": "guestList",
+      "requestSchema": "schemas/endpoints/guests-input.json", "responseSchema": "schemas/endpoints/guests-output.json",
+      "timeoutClass": "standard", "maxRequestBytes": 1024, "maxResponseBytes": 131072
+    },
+    "summary": {
+      "method": "GET", "kind": "query", "permission": "view", "handler": "resourceSummary",
+      "requestSchema": "schemas/endpoints/summary-input.json", "responseSchema": "schemas/endpoints/summary-output.json",
+      "timeoutClass": "standard", "maxRequestBytes": 1024, "maxResponseBytes": 65536
+    },
+    "tasks": {
+      "method": "GET", "kind": "query", "permission": "view", "handler": "taskLog",
+      "requestSchema": "schemas/endpoints/tasks-input.json", "responseSchema": "schemas/endpoints/tasks-output.json",
+      "timeoutClass": "standard", "maxRequestBytes": 1024, "maxResponseBytes": 65536
+    },
+    "test": {
+      "method": "GET", "kind": "query", "permission": "view", "handler": "testConnection",
+      "requestSchema": "schemas/endpoints/test-input.json", "responseSchema": "schemas/endpoints/test-output.json",
+      "timeoutClass": "short", "maxRequestBytes": 1024, "maxResponseBytes": 4096
+    },
+    "guest-action": {
+      "method": "POST", "kind": "mutation", "permission": "start_stop", "handler": "guestAction",
+      "requestSchema": "schemas/endpoints/guest-action-input.json", "responseSchema": "schemas/endpoints/guest-action-output.json",
+      "auditAction": "proxmox_guest_power_action", "timeoutClass": "action", "maxRequestBytes": 1024, "maxResponseBytes": 8192
+    }
+  }
+}

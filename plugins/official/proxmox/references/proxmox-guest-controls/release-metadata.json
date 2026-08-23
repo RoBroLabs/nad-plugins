@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "releasedAt": "2026-08-13",
+  "sourceDirectory": "plugins/official/proxmox/references/proxmox-guest-controls",
+  "license": "AGPL-3.0-only",
+  "repositoryUrl": null,
+  "sourceUrl": null,
+  "sourceTag": null,
+  "changelog": { "summary": "Reference UI-only Add-on for the Proxmox App.", "entries": ["Consumes only declared guests and guest-action operations.", "Selects a core-owned Proxmox profile without receiving its configuration.", "Runs in an opaque-origin sandbox using UI bridge v2."] },
+  "hotUpdate": { "compatibility": "compatible", "preserves": ["Dependency alias and operation ranges.", "Surface, binding and permission identifiers.", "Workspace layouts and selected connection-profile references."] }
+}

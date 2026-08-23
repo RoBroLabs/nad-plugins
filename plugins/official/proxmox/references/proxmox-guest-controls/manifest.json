@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 2,
+  "kind": "addon",
+  "id": "dev.robrolabs.proxmox-guest-controls",
+  "slug": "proxmox-guest-controls",
+  "name": "Proxmox Guest Controls",
+  "description": "Sandboxed guest inventory and power controls using versioned Proxmox App operations.",
+  "icon": "power",
+  "category": "servers",
+  "version": "1.0.0",
+  "publisher": "Robro Labs",
+  "compatibility": { "core": ">=0.3.0 <1.0.0", "hostApi": "2.x", "uiApi": "2.x" },
+  "capabilities": [
+    {
+      "name": "apps.invoke",
+      "reason": "Invoke only the declared versioned Proxmox App operations through NAD core."
+    }
+  ],
+  "permissions": [
+    { "action": "view", "label": "View Proxmox guests", "risk": "read" },
+    { "action": "start_stop", "label": "Manage Proxmox guests", "risk": "write" }
+  ],
+  "dependencies": [
+    {
+      "alias": "proxmox",
+      "appId": "dev.robrolabs.proxmox",
+      "packageVersion": ">=2.0.0 <3.0.0",
+      "operations": { "guests": "^1.0.0", "guest-action": "^1.0.0" }
+    }
+  ],
+  "surfaces": "ui/surfaces.json"
+}

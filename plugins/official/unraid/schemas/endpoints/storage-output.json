@@ -1,0 +1,270 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Unraid storage response",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "arrayState",
+    "capacity",
+    "parity",
+    "diskCount",
+    "parityCount",
+    "dataDiskCount",
+    "cacheDiskCount",
+    "shareCount",
+    "disks",
+    "shares",
+    "partial",
+    "errors",
+    "refreshedAt"
+  ],
+  "properties": {
+    "arrayState": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "capacity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "totalBytes",
+        "usedBytes",
+        "freeBytes",
+        "usagePercent"
+      ],
+      "properties": {
+        "totalBytes": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "usedBytes": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "freeBytes": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "usagePercent": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        }
+      }
+    },
+    "parity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "progressPercent",
+        "errors",
+        "running",
+        "paused"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "progressPercent": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "errors": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "running": {
+          "type": "boolean"
+        },
+        "paused": {
+          "type": "boolean"
+        }
+      }
+    },
+    "diskCount": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 256
+    },
+    "parityCount": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 256
+    },
+    "dataDiskCount": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 256
+    },
+    "cacheDiskCount": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 256
+    },
+    "shareCount": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 256
+    },
+    "disks": {
+      "type": "array",
+      "maxItems": 256,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "type",
+          "status",
+          "temperatureC",
+          "totalBytes",
+          "usedBytes",
+          "freeBytes",
+          "errorCount",
+          "spinning"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "type": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "status": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "temperatureC": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 1000
+          },
+          "totalBytes": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "usedBytes": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "freeBytes": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "errorCount": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "spinning": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "shares": {
+      "type": "array",
+      "maxItems": 256,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "totalBytes",
+          "usedBytes",
+          "freeBytes",
+          "usagePercent",
+          "cached"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "totalBytes": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "usedBytes": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "freeBytes": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "usagePercent": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "cached": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "partial": {
+      "type": "boolean"
+    },
+    "errors": {
+      "type": "array",
+      "maxItems": 16,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "message"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 600
+          }
+        }
+      }
+    },
+    "refreshedAt": {
+      "type": "string",
+      "minLength": 20,
+      "maxLength": 40
+    }
+  }
+}

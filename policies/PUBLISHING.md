@@ -29,5 +29,5 @@ runs without secrets. A human reviews the exact source and evidence before
 trusted infrastructure rebuilds and signs the artifact. A contributor-supplied
 binary is never promoted.
 
-See `policies/FIRST_PARTY_RELEASES.md`, `policies/RELEASE_KEYS.md` and
-`policies/REVIEW_POLICY.md` for the detailed gates.
+See `policies/RELEASE_KEYS.md` and `policies/REVIEW_POLICY.md` for the
+detailed gates.

@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "name": "Two-host Node Exporter preview",
+  "description": "Exercises an online host, an unavailable host, permission denial, and core-owned notification capture without contacting a real network.",
+  "defaultRole": "viewer",
+  "roles": {
+    "viewer": {
+      "grants": ["view"]
+    },
+    "operator": {
+      "grants": ["view", "notify"]
+    },
+    "denied": {
+      "grants": []
+    }
+  },
+  "config": {
+    "hosts": "nas|nas.local,router|router.local",
+    "check_method": "node_exporter",
+    "node_exporter_port": "9100"
+  },
+  "requests": {
+    "notification-test": {
+      "method": "POST",
+      "body": {}
+    }
+  },
+  "responses": {
+    "http://nas.local:9100/metrics": {
+      "status": 200,
+      "headers": {
+        "content-type": "text/plain"
+      },
+      "fixture": "../upstream/node-exporter.prom"
+    },
+    "http://router.local:9100/metrics": {
+      "status": 503,
+      "headers": {
+        "content-type": "text/plain"
+      },
+      "body": "temporarily unavailable"
+    }
+  }
+}

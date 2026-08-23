@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "widgets": [
+    {
+      "id": "dns-stats",
+      "name": "DNS Statistics",
+      "description": "Aggregate Pi-hole query, blocking, and blocklist statistics.",
+      "defaultSize": { "w": 8, "h": 4 },
+      "minSize": { "w": 4, "h": 3 },
+      "maxSize": { "w": 12, "h": 7 },
+      "requiredConfig": ["pihole_url", "pihole_api_key", "pihole_api_version"],
+      "source": {
+        "endpoint": "summary",
+        "refreshIntervalMs": 30000
+      },
+      "body": [
+        {
+          "type": "section",
+          "body": [
+            { "type": "status", "label": "DNS protection", "valuePath": "statusLabel", "tonePath": "statusTone" },
+            { "type": "metric", "label": "Queries", "valuePath": "totalQueries" },
+            { "type": "metric", "label": "Blocked", "valuePath": "blockedQueries" },
+            { "type": "metric", "label": "Block rate", "valuePath": "blockPercentage", "unit": "%" },
+            { "type": "metric", "label": "Domains on lists", "valuePath": "domainsOnBlocklist" },
+            {
+              "type": "keyValue",
+              "items": [
+                { "label": "Available", "valuePath": "availableInstances" },
+                { "label": "Unavailable", "valuePath": "unavailableInstances" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dns-toggle",
+      "name": "DNS Blocking",
+      "description": "Compact blocking state across every configured Pi-hole.",
+      "defaultSize": { "w": 4, "h": 2 },
+      "minSize": { "w": 2, "h": 2 },
+      "maxSize": { "w": 6, "h": 4 },
+      "requiredConfig": ["pihole_url", "pihole_api_key", "pihole_api_version"],
+      "source": {
+        "endpoint": "status",
+        "refreshIntervalMs": 15000
+      },
+      "body": [
+        {
+          "type": "section",
+          "body": [
+            { "type": "status", "label": "Pi-hole", "valuePath": "statusLabel", "tonePath": "statusTone" },
+            {
+              "type": "keyValue",
+              "items": [
+                { "label": "Available", "valuePath": "availableInstances" },
+                { "label": "Configured", "valuePath": "configuredInstances" },
+                { "label": "Last checked", "valuePath": "refreshedAt" }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

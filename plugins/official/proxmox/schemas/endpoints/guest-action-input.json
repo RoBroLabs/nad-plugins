@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Proxmox guest action request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["action", "node", "type", "vmid"],
+  "properties": {
+    "action": { "enum": ["start", "stop", "restart"] },
+    "node": { "type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$" },
+    "type": { "enum": ["qemu", "lxc"] },
+    "vmid": { "type": "integer", "minimum": 100, "maximum": 999999999 }
+  }
+}

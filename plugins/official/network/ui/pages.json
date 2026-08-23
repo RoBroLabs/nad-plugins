@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "pages": [
+    {
+      "path": "/",
+      "title": "Network",
+      "icon": "network",
+      "source": {
+        "endpoint": "stats",
+        "refreshIntervalMs": 30000
+      },
+      "body": [
+        {
+          "type": "section",
+          "title": "DNS protection",
+          "body": [
+            { "type": "status", "label": "Blocking", "valuePath": "statusLabel", "tonePath": "statusTone" },
+            { "type": "metric", "label": "Queries", "valuePath": "totalQueries" },
+            { "type": "metric", "label": "Blocked", "valuePath": "blockedQueries" },
+            { "type": "metric", "label": "Block rate", "valuePath": "blockPercentage", "unit": "%" },
+            { "type": "metric", "label": "Domains on lists", "valuePath": "domainsOnBlocklist" },
+            {
+              "type": "keyValue",
+              "items": [
+                { "label": "Configured Pi-holes", "valuePath": "configuredInstances" },
+                { "label": "Available Pi-holes", "valuePath": "availableInstances" },
+                { "label": "Active clients", "valuePath": "uniqueClients" },
+                { "label": "Forwarded queries", "valuePath": "queriesForwarded" },
+                { "label": "Cached queries", "valuePath": "queriesCached" },
+                { "label": "Last refreshed", "valuePath": "refreshedAt" }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "section",
+          "title": "Pi-hole instances",
+          "body": [
+            {
+              "type": "table",
+              "rowsPath": "instances",
+              "emptyText": "No Pi-hole instances are configured.",
+              "columns": [
+                { "key": "name", "label": "Instance", "valuePath": "name" },
+                { "key": "available", "label": "Available", "valuePath": "available" },
+                { "key": "blocking", "label": "Blocking", "valuePath": "blockingStatus" },
+                { "key": "queries", "label": "Queries", "valuePath": "totalQueries" },
+                { "key": "blocked", "label": "Blocked", "valuePath": "blockedQueries" },
+                { "key": "rate", "label": "Block rate", "valuePath": "blockPercentage" },
+                { "key": "error", "label": "Health note", "valuePath": "error" }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "section",
+          "title": "Blocking controls",
+          "body": [
+            {
+              "type": "text",
+              "value": "DNS blocking changes require the manage_dns permission. Every target result is checked against its observed final state and attached to NAD's core audit record."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

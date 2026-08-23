@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "name": "Unraid 7.2 read-only monitoring",
+  "description": "Exercises the exact GraphQL endpoint, opaque x-api-key injection, host metrics, array storage, shares, Docker, VMs, and permission denial without contacting a server.",
+  "defaultRole": "viewer",
+  "roles": {
+    "viewer": { "grants": ["view"] },
+    "denied": { "grants": [] }
+  },
+  "config": {
+    "server_host": "tower.test",
+    "scheme": "https",
+    "port": 443,
+    "api_key": {
+      "present": true,
+      "secretRef": "secret:dev.robrolabs.unraid:api_key"
+    }
+  },
+  "responses": {
+    "https://tower.test/graphql": {
+      "status": 200,
+      "headers": { "content-type": "application/json" },
+      "fixture": "../upstream/graphql-full.json"
+    }
+  }
+}

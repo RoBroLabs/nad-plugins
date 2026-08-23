@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 2,
+  "surfaces": [
+    {
+      "id": "guest-controls",
+      "kind": "widget",
+      "name": "Proxmox Guest Controls",
+      "description": "Guest status and audited power controls for one selected Proxmox connection.",
+      "entry": "ui/surfaces/guest-controls.html",
+      "bridge": "2.x",
+      "permissions": ["view", "start_stop"],
+      "connectionSlots": [{ "slot": "primary", "target": "proxmox", "required": true }],
+      "bindings": {
+        "guests": { "target": "proxmox", "operation": "guests", "connectionSlot": "primary" },
+        "guest-action": { "target": "proxmox", "operation": "guest-action", "connectionSlot": "primary" }
+      },
+      "widget": { "defaultSize": { "w": 7, "h": 5 }, "minSize": { "w": 4, "h": 3 }, "maxSize": { "w": 12, "h": 10 }, "chrome": "solid" },
+      "execution": { "requestedMode": "sandbox", "privileges": ["theme", "resize", "connection-selection"] }
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Proxmox connection test response",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["connected", "nodeCount", "message"],
+  "properties": {
+    "connected": { "const": true },
+    "nodeCount": { "type": "integer", "minimum": 0, "maximum": 32 },
+    "version": { "type": "string", "minLength": 1, "maxLength": 80 },
+    "message": { "type": "string", "minLength": 1, "maxLength": 200 }
+  }
+}

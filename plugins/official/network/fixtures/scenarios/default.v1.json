@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "name": "Pi-hole v6 redundant pair with partial availability",
+  "description": "Exercises current v6 routes, opaque credentials, a healthy primary, an unavailable secondary, query permission denial, and an audited timed blocking change without contacting a network.",
+  "defaultRole": "viewer",
+  "roles": {
+    "viewer": {
+      "grants": ["view"]
+    },
+    "operator": {
+      "grants": ["view", "manage_dns"]
+    },
+    "denied": {
+      "grants": []
+    }
+  },
+  "config": {
+    "pihole_url": "https://primary.pihole.test/admin",
+    "pihole_api_key": {
+      "present": true,
+      "secretRef": "secret:dev.robrolabs.network:pihole_api_key"
+    },
+    "pihole_api_version": "v6",
+    "pihole2_url": "http://secondary.pihole.test/api",
+    "pihole2_api_key": {
+      "present": true,
+      "secretRef": "secret:dev.robrolabs.network:pihole2_api_key"
+    }
+  },
+  "requests": {
+    "blocking": {
+      "method": "POST",
+      "body": {
+        "action": "disable",
+        "durationSeconds": 300
+      }
+    }
+  },
+  "responses": {
+    "https://primary.pihole.test/api/auth": {
+      "status": 200,
+      "headers": { "content-type": "application/json" },
+      "fixture": "../upstream/v6-auth.json"
+    },
+    "https://primary.pihole.test/api/stats/summary": {
+      "status": 200,
+      "headers": { "content-type": "application/json" },
+      "fixture": "../upstream/v6-summary.json"
+    },
+    "https://primary.pihole.test/api/dns/blocking": {
+      "status": 200,
+      "headers": { "content-type": "application/json" },
+      "fixture": "../upstream/v6-blocking-disabled.json"
+    },
+    "http://secondary.pihole.test/api/auth": {
+      "status": 503,
+      "headers": { "content-type": "application/json" },
+      "body": { "error": { "message": "unavailable fixture" } }
+    }
+  }
+}

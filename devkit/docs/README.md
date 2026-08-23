@@ -8,5 +8,5 @@
 - [`CLEAN_ROOM.md`](CLEAN_ROOM.md): testing without published NAD packages.
 - [`TOOLCHAIN.md`](TOOLCHAIN.md): pinned Node.js, pnpm and Deno versions.
 
-First-party signing custody and promotion runbooks are intentionally outside the
-downloadable Devkit under `policies/` in the private workbench.
+Signing custody and publication rules live under [`../../policies/`](../../policies/)
+and are not part of the downloadable Devkit archive.

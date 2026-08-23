@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "System Monitor notification test response",
+  "type": "object",
+  "required": ["accepted"],
+  "properties": {
+    "accepted": { "const": true }
+  },
+  "additionalProperties": false
+}

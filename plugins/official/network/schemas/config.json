@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Network configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["pihole_url", "pihole_api_key", "pihole_api_version"],
+  "properties": {
+    "pihole_url": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "pihole_api_key": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "pihole_api_version": {
+      "enum": ["v5", "v6"]
+    },
+    "pihole2_url": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "pihole2_api_key": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    }
+  }
+}

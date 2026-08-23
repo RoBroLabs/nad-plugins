@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 2,
+  "surfaces": [
+    {
+      "id": "overview",
+      "kind": "page",
+      "name": "Proxmox Overview",
+      "description": "Nodes and guests from the selected Proxmox connection.",
+      "icon": "server-cog",
+      "entry": "ui/surfaces/overview.html",
+      "bridge": "2.x",
+      "permissions": ["view"],
+      "connectionSlots": [{ "slot": "primary", "target": "self", "required": true }],
+      "bindings": { "overview": { "target": "self", "operation": "overview", "connectionSlot": "primary" } },
+      "page": { "path": "/", "pinEligible": true },
+      "execution": { "requestedMode": "sandbox", "privileges": ["theme", "resize", "connection-selection"] }
+    },
+    {
+      "id": "cluster-summary",
+      "kind": "widget",
+      "name": "Proxmox Cluster",
+      "description": "Compact cluster totals from the selected connection.",
+      "entry": "ui/surfaces/cluster-summary.html",
+      "bridge": "2.x",
+      "permissions": ["view"],
+      "connectionSlots": [{ "slot": "primary", "target": "self", "required": true }],
+      "bindings": { "overview": { "target": "self", "operation": "overview", "connectionSlot": "primary" } },
+      "widget": { "defaultSize": { "w": 5, "h": 3 }, "minSize": { "w": 3, "h": 2 }, "maxSize": { "w": 8, "h": 6 }, "chrome": "standard" },
+      "execution": { "requestedMode": "sandbox", "privileges": ["theme", "resize", "connection-selection"] }
+    }
+  ]
+}

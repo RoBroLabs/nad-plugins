@@ -1,0 +1,16 @@
+{
+  "data": [
+    {
+      "id": "storage/pve-fixture/local-zfs",
+      "storage": "local-zfs",
+      "node": "pve-fixture",
+      "plugintype": "zfspool",
+      "status": "available",
+      "shared": 0,
+      "disk": 107374182400,
+      "maxdisk": 536870912000,
+      "content": "images,rootdir",
+      "type": "storage"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Proxmox connection",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["api_url", "token_id", "token_secret", "verify_ssl"],
+  "properties": {
+    "api_url": { "type": "string", "title": "Proxmox API URL", "maxLength": 512, "x-nad": { "control": "url", "placeholder": "Proxmox API root URL" } },
+    "token_id": { "type": "string", "title": "API token ID", "maxLength": 256, "pattern": "^[A-Za-z0-9@!._-]+$", "x-nad": { "control": "text", "placeholder": "nad@pve!dashboard" } },
+    "token_secret": { "type": "string", "title": "API token secret", "maxLength": 1024, "x-nad": { "control": "secret" } },
+    "verify_ssl": { "type": "boolean", "title": "Verify TLS certificate", "default": true, "x-nad": { "control": "boolean" } }
+  }
+}

@@ -28,4 +28,21 @@ describe('UI bridge v2 harness', () => {
     expect(bridge.revoke()).toMatchObject({ type: 'access.revoked' });
     expect(() => bridge.receive(message('surface.ready', {}, 3))).toThrow('ACCESS_REVOKED');
   });
+
+  it('covers the generated surface resize and connection-control paths', () => {
+    const bridge = createBridgeHarness({
+      sessionId,
+      privileges: ['resize', 'connection-selection'],
+    });
+
+    expect(bridge.receive(message('resize.request', { height: 320 }))).toMatchObject({
+      type: 'resize.request',
+      payload: { height: 320 },
+    });
+    expect(bridge.receive(message('connection.select.request', { slot: 'primary' }, 2))).toMatchObject({
+      type: 'connection.select.request',
+      payload: { slot: 'primary' },
+    });
+    expect(() => bridge.receive(message('resize.request', { height: 1 }, 3))).toThrow();
+  });
 });

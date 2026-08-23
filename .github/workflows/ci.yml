@@ -1,18 +1,69 @@
-name: Devkit gate
+name: Release gate
+
 on:
   push:
+    branches: [main, "codex/**"]
   pull_request:
+  workflow_dispatch:
+
 permissions:
   contents: read
+
 jobs:
-  devkit:
+  source:
     runs-on: ubuntu-latest
+    timeout-minutes: 75
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [20.20.0, 22.22.0]
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
-          node-version: 22.22.0
-      - run: corepack enable && corepack prepare pnpm@9.15.0 --activate
-      - run: pnpm install --frozen-lockfile --strict-peer-dependencies
-      - run: pnpm contracts_check && pnpm lint && pnpm typecheck && pnpm test && pnpm build
-      - run: pnpm clean_room && pnpm devkit_build && pnpm devkit_verify
+          node-version: ${{ matrix.node }}
+      - name: Enable pinned pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.15.0 --activate
+      - name: Install dependencies and Deno
+        run: |
+          pnpm install --frozen-lockfile --strict-peer-dependencies
+          bash devkit/scripts/ci-install-deno.sh
+          echo "$PWD/.ci-tools" >> "$GITHUB_PATH"
+      - name: Complete SDK gate
+        run: pnpm ci:gate
+
+  secrets:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+      - name: Scan complete Git history
+        run: docker run --rm -v "$PWD:/repo" zricethezav/gitleaks:v8.28.0@sha256:cdbb7c955abce02001a9f6c9f602fb195b7fadc1e812065883f695d1eeaba854 git --config=/repo/.gitleaks.toml --no-banner --redact /repo
+
+  architecture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: linux/amd64
+            machine: x86_64
+            tag: amd64
+          - platform: linux/arm64
+            machine: aarch64
+            tag: arm64
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130 # v3
+        with:
+          platforms: arm64
+      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+      - name: Build SDK gate
+        run: docker buildx build --load --platform "${{ matrix.platform }}" --tag "nad-sdk-gate:${{ matrix.tag }}" .
+      - name: Run SDK gate
+        run: docker run --rm --env "EXPECTED_MACHINE=${{ matrix.machine }}" "nad-sdk-gate:${{ matrix.tag }}"

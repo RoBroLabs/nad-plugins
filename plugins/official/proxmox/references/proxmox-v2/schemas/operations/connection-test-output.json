@@ -1,0 +1,5 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema", "type": "object", "additionalProperties": false,
+  "required": ["connected", "profile", "nodeCount"],
+  "properties": { "connected": { "const": true }, "profile": { "type": "string", "maxLength": 80 }, "nodeCount": { "type": "integer", "minimum": 0, "maximum": 32 }, "version": { "type": "string", "maxLength": 80 } }
+}

@@ -1,4 +1,6 @@
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
+import { readFile } from 'node:fs/promises';
+import { join, resolve } from 'node:path';
 import { inspect } from 'node:util';
 import type { ModuleManifest, PagesFile, WidgetsFile } from '@nad/sdk';
 
@@ -515,6 +517,30 @@ export async function startDevPreviewServer(options: DevCliOptions): Promise<Dev
 
 export async function commandDev(args: string[], io: CommandIo = console): Promise<void> {
   const options = parseDevArgs(args);
+  const manifest = JSON.parse(await readFile(join(resolve(options.moduleDir), 'manifest.json'), 'utf8')) as { schemaVersion?: unknown };
+  if (manifest.schemaVersion === 2) {
+    if (!options.once) {
+      throw new Error('Schema-v2 preview currently runs in fixture-only --once mode. Use NAD core to inspect the sandboxed surface.');
+    }
+    const runtime = await import('@nad/testkit') as {
+      runDevPreviewV2?: (input: {
+        packageDir: string;
+        scenario?: string;
+        role?: string;
+        operation?: string;
+      }) => Promise<unknown>;
+    };
+    if (typeof runtime.runDevPreviewV2 !== 'function') {
+      throw new Error('The schema-v2 Devkit preview runtime is unavailable. Re-run setup.');
+    }
+    io.log(JSON.stringify(await runtime.runDevPreviewV2({
+      packageDir: options.moduleDir,
+      scenario: options.scenario,
+      role: options.role,
+      operation: options.endpoint,
+    }), null, 2));
+    return;
+  }
   if (options.once) {
     const runtime = await loadTestkitDevRuntime();
     const result = await runtime.runDevSession({

@@ -1,0 +1,16 @@
+{
+  "queries": {
+    "total": 1000,
+    "blocked": 250,
+    "percent_blocked": 25,
+    "forwarded": 500,
+    "cached": 250
+  },
+  "clients": {
+    "active": 12,
+    "total": 20
+  },
+  "gravity": {
+    "domains_being_blocked": 120000
+  }
+}

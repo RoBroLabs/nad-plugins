@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Proxmox guest action result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["accepted", "complete", "outcome", "action", "node", "type", "vmid", "upid", "observedState", "taskStatus", "message"],
+  "properties": {
+    "accepted": { "const": true },
+    "complete": { "type": "boolean" },
+    "outcome": { "enum": ["success", "failed", "indeterminate"] },
+    "action": { "enum": ["start", "stop", "restart"] },
+    "node": { "type": "string", "minLength": 1, "maxLength": 64 },
+    "type": { "enum": ["qemu", "lxc"] },
+    "vmid": { "type": "integer", "minimum": 100, "maximum": 999999999 },
+    "upid": { "type": ["string", "null"], "maxLength": 512 },
+    "observedState": { "enum": ["running", "stopped", "paused", "unknown"] },
+    "taskStatus": { "enum": ["running", "success", "failed", "unknown"] },
+    "message": { "type": "string", "minLength": 1, "maxLength": 300 }
+  }
+}

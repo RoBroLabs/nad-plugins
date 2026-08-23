@@ -1,0 +1,148 @@
+{
+  "schemaVersion": 1,
+  "id": "dev.robrolabs.unraid",
+  "slug": "unraid",
+  "name": "Unraid",
+  "description": "Monitor an Unraid 7.2+ server, array, shares, Docker containers, and virtual machines.",
+  "icon": "server",
+  "category": "servers",
+  "version": "1.0.0",
+  "publisher": "Robro Labs",
+  "compatibility": {
+    "core": ">=0.2.7 <1.0.0",
+    "hostApi": "1.x",
+    "uiApi": "1.x"
+  },
+  "capabilities": [
+    {
+      "name": "config.get",
+      "reason": "Read the administrator-defined server host, scheme, port, and opaque API-key presence."
+    },
+    {
+      "name": "http.request",
+      "reason": "Send bounded read-only GraphQL queries through NAD core with core-injected API-key authentication."
+    }
+  ],
+  "httpAccess": [
+    {
+      "scheme": "http",
+      "hostConfig": "server_host",
+      "portConfig": "port",
+      "path": "/graphql",
+      "methods": ["POST"],
+      "effect": "read",
+      "requestBodyPolicy": "graphql-query",
+      "credential": {
+        "config": "api_key",
+        "location": "header",
+        "name": "x-api-key"
+      }
+    },
+    {
+      "scheme": "https",
+      "hostConfig": "server_host",
+      "portConfig": "port",
+      "path": "/graphql",
+      "methods": ["POST"],
+      "effect": "read",
+      "requestBodyPolicy": "graphql-query",
+      "credential": {
+        "config": "api_key",
+        "location": "header",
+        "name": "x-api-key"
+      }
+    }
+  ],
+  "permissions": [
+    {
+      "action": "view",
+      "label": "View Unraid status",
+      "risk": "read",
+      "description": "View Unraid host, resource, storage, Docker, and virtual-machine status."
+    }
+  ],
+  "configSchema": [
+    {
+      "key": "server_host",
+      "label": "Server host",
+      "type": "text",
+      "required": true,
+      "placeholder": "tower.local",
+      "description": "Unraid hostname or IP address only, without a scheme, port, path, credentials, query, or fragment."
+    },
+    {
+      "key": "scheme",
+      "label": "Scheme",
+      "type": "select",
+      "required": true,
+      "defaultValue": "https",
+      "options": [
+        { "label": "HTTPS", "value": "https" },
+        { "label": "HTTP", "value": "http" }
+      ],
+      "description": "Use HTTPS when the Unraid management endpoint has a trusted certificate."
+    },
+    {
+      "key": "port",
+      "label": "API port",
+      "type": "number",
+      "required": true,
+      "defaultValue": 443,
+      "placeholder": "443",
+      "description": "TCP port for the Unraid GraphQL endpoint."
+    },
+    {
+      "key": "api_key",
+      "label": "API key",
+      "type": "secret",
+      "required": true,
+      "description": "A read-only Unraid API key. NAD encrypts and injects it as x-api-key; Module code never receives plaintext."
+    }
+  ],
+  "entrypoints": {
+    "overview": {
+      "method": "GET",
+      "kind": "query",
+      "permission": "view",
+      "handler": "overview",
+      "requestSchema": "schemas/endpoints/overview-input.json",
+      "responseSchema": "schemas/endpoints/overview-output.json",
+      "timeoutClass": "standard",
+      "maxRequestBytes": 1024,
+      "maxResponseBytes": 262144
+    },
+    "summary": {
+      "method": "GET",
+      "kind": "query",
+      "permission": "view",
+      "handler": "summary",
+      "requestSchema": "schemas/endpoints/summary-input.json",
+      "responseSchema": "schemas/endpoints/summary-output.json",
+      "timeoutClass": "standard",
+      "maxRequestBytes": 1024,
+      "maxResponseBytes": 65536
+    },
+    "storage": {
+      "method": "GET",
+      "kind": "query",
+      "permission": "view",
+      "handler": "storage",
+      "requestSchema": "schemas/endpoints/storage-input.json",
+      "responseSchema": "schemas/endpoints/storage-output.json",
+      "timeoutClass": "standard",
+      "maxRequestBytes": 1024,
+      "maxResponseBytes": 262144
+    },
+    "workloads": {
+      "method": "GET",
+      "kind": "query",
+      "permission": "view",
+      "handler": "workloads",
+      "requestSchema": "schemas/endpoints/workloads-input.json",
+      "responseSchema": "schemas/endpoints/workloads-output.json",
+      "timeoutClass": "standard",
+      "maxRequestBytes": 1024,
+      "maxResponseBytes": 262144
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "extends": "../../../../../tsconfig.base.json",
+  "compilerOptions": { "rootDir": "src", "outDir": "dist/server", "declaration": false, "sourceMap": false },
+  "include": ["src/**/*.ts"],
+  "references": [{ "path": "../../../../../devkit/packages/sdk" }, { "path": "../../../../../devkit/packages/testkit" }]
+}

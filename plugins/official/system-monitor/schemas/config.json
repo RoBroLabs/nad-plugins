@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "System Monitor configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["hosts", "check_method"],
+  "properties": {
+    "hosts": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 16384
+    },
+    "check_method": {
+      "enum": ["node_exporter", "http"]
+    },
+    "node_exporter_port": {
+      "type": ["integer", "string"],
+      "minimum": 1,
+      "maximum": 65535
+    }
+  }
+}

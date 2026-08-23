@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "pages": [
+    {
+      "path": "/",
+      "title": "System Monitor",
+      "icon": "layout-dashboard",
+      "source": {
+        "endpoint": "metrics",
+        "refreshIntervalMs": 15000
+      },
+      "body": [
+        {
+          "type": "section",
+          "title": "Overview",
+          "body": [
+            { "type": "metric", "label": "Hosts", "valuePath": "totalHosts" },
+            { "type": "metric", "label": "Online", "valuePath": "onlineHosts" },
+            { "type": "status", "label": "State", "valuePath": "status", "tonePath": "statusTone" },
+            {
+              "type": "keyValue",
+              "items": [
+                { "label": "Mode", "valuePath": "checkMethodLabel" }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "section",
+          "title": "Hosts",
+          "body": [
+            {
+              "type": "table",
+              "rowsPath": "hosts",
+              "emptyText": "No hosts configured.",
+              "columns": [
+                { "key": "name", "label": "Host", "valuePath": "name" },
+                { "key": "address", "label": "Address", "valuePath": "address" },
+                { "key": "status", "label": "Status", "valuePath": "status" },
+                { "key": "uptime", "label": "Uptime seconds", "valuePath": "uptimeSeconds" },
+                { "key": "cpu", "label": "CPU", "valuePath": "cpuPercent" },
+                { "key": "memory", "label": "Memory", "valuePath": "memoryPercent" },
+                { "key": "disk", "label": "Disk", "valuePath": "diskPercent" }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

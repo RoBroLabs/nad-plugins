@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Unraid configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["server_host", "scheme", "port", "api_key"],
+  "properties": {
+    "server_host": { "type": "string", "minLength": 1, "maxLength": 253 },
+    "scheme": { "enum": ["http", "https"] },
+    "port": { "type": "integer", "minimum": 1, "maximum": 65535 },
+    "api_key": { "type": "string", "minLength": 1, "maxLength": 1024 }
+  }
+}

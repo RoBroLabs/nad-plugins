@@ -1,0 +1,8 @@
+node_boot_time_seconds 1700000000
+node_memory_MemTotal_bytes 100
+node_memory_MemAvailable_bytes 25
+node_filesystem_size_bytes{mountpoint="/"} 200
+node_filesystem_avail_bytes{mountpoint="/"} 50
+node_cpu_seconds_total{cpu="0",mode="idle"} 80
+node_cpu_seconds_total{cpu="0",mode="system"} 10
+node_cpu_seconds_total{cpu="0",mode="user"} 10

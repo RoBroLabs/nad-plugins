@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Network DNS blocking result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "accepted",
+    "complete",
+    "action",
+    "blockingStatus",
+    "statusLabel",
+    "statusTone",
+    "succeededTargets",
+    "failedTargets",
+    "targets",
+    "message"
+  ],
+  "properties": {
+    "accepted": { "type": "boolean" },
+    "complete": { "type": "boolean" },
+    "action": { "enum": ["enable", "disable"] },
+    "durationSeconds": { "type": "integer", "minimum": 1, "maximum": 86400 },
+    "blockingStatus": { "enum": ["enabled", "disabled", "mixed", "unknown"] },
+    "statusLabel": { "type": "string", "minLength": 1, "maxLength": 100 },
+    "statusTone": { "enum": ["ok", "warning", "critical"] },
+    "succeededTargets": { "type": "integer", "minimum": 0, "maximum": 2 },
+    "failedTargets": { "type": "integer", "minimum": 0, "maximum": 2 },
+    "targets": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "succeeded", "observedFinalState"],
+        "properties": {
+          "id": { "enum": ["primary", "secondary"] },
+          "name": { "type": "string", "minLength": 1, "maxLength": 80 },
+          "succeeded": { "type": "boolean" },
+          "observedFinalState": { "enum": ["enabled", "disabled", "unknown"] },
+          "error": { "type": "string", "minLength": 1, "maxLength": 200 }
+        }
+      }
+    },
+    "message": { "type": "string", "minLength": 1, "maxLength": 300 }
+  }
+}

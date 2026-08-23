@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 2,
+  "name": "Two Proxmox connections",
+  "profiles": [
+    { "id": "fixture_lab_0001", "name": "Lab", "values": { "api_url": "https://pve.lab.invalid:8006", "token_id": "nad@pve!lab", "token_secret": { "secretRef": "fixture/lab/token", "present": true }, "verify_ssl": true } },
+    { "id": "fixture_remote_0001", "name": "Remote", "values": { "api_url": "https://pve.remote.invalid:8006", "token_id": "nad@pve!remote", "token_secret": { "secretRef": "fixture/remote/token", "present": true }, "verify_ssl": true } }
+  ],
+  "selectedProfileId": "fixture_lab_0001",
+  "roles": { "viewer": { "grants": ["view"] }, "operator": { "grants": ["view", "start_stop"] } },
+  "defaultRole": "viewer"
+}

@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 2,
+  "kind": "app",
+  "id": "dev.robrolabs.proxmox",
+  "slug": "proxmox",
+  "name": "Proxmox",
+  "description": "Reference schema-v2 Proxmox App with named connections and versioned operations.",
+  "icon": "server-cog",
+  "category": "servers",
+  "version": "2.0.0",
+  "publisher": "Robro Labs",
+  "compatibility": { "core": ">=0.3.0 <1.0.0", "hostApi": "2.x", "uiApi": "2.x" },
+  "capabilities": [
+    { "name": "connections.current", "reason": "Identify the core-selected Proxmox connection profile." },
+    { "name": "connections.get", "reason": "Validate public connection fields and opaque credential presence." },
+    { "name": "http.request", "reason": "Use exact core-brokered Proxmox routes with credentials injected from the selected profile." },
+    { "name": "audit.annotate", "reason": "Record safe guest power action outcomes in the core audit event." }
+  ],
+  "permissions": [
+    { "action": "view", "label": "View Proxmox", "risk": "read", "description": "View nodes and guests for an allowed connection." },
+    { "action": "start_stop", "label": "Manage guests", "risk": "write", "description": "Start, stop or restart an allowed Proxmox guest." }
+  ],
+  "connections": { "schema": "schemas/connections.json", "multiple": true, "testOperation": "connection.test" },
+  "httpAccess": [
+    { "id": "version", "scheme": "https", "hostField": "api_url", "path": "/api2/json/version", "methods": ["GET"], "effect": "read", "credential": { "field": "token_secret", "location": "header", "name": "Authorization", "prefix": "PVEAPIToken=", "publicField": "token_id", "separator": "=" }, "tlsVerifyField": "verify_ssl" },
+    { "id": "nodes", "scheme": "https", "hostField": "api_url", "path": "/api2/json/nodes", "methods": ["GET"], "effect": "read", "credential": { "field": "token_secret", "location": "header", "name": "Authorization", "prefix": "PVEAPIToken=", "publicField": "token_id", "separator": "=" }, "tlsVerifyField": "verify_ssl" },
+    { "id": "guests", "scheme": "https", "hostField": "api_url", "path": "/api2/json/cluster/resources", "methods": ["GET"], "effect": "read", "queryParameters": ["type"], "credential": { "field": "token_secret", "location": "header", "name": "Authorization", "prefix": "PVEAPIToken=", "publicField": "token_id", "separator": "=" }, "tlsVerifyField": "verify_ssl" },
+    { "id": "qemu-start", "scheme": "https", "hostField": "api_url", "path": "/api2/json/nodes/{node}/qemu/{vmid}/status/start", "pathParameters": { "node": "segment", "vmid": "integer" }, "methods": ["POST"], "effect": "write", "credential": { "field": "token_secret", "location": "header", "name": "Authorization", "prefix": "PVEAPIToken=", "publicField": "token_id", "separator": "=" }, "tlsVerifyField": "verify_ssl" },
+    { "id": "qemu-stop", "scheme": "https", "hostField": "api_url", "path": "/api2/json/nodes/{node}/qemu/{vmid}/status/stop", "pathParameters": { "node": "segment", "vmid": "integer" }, "methods": ["POST"], "effect": "write", "credential": { "field": "token_secret", "location": "header", "name": "Authorization", "prefix": "PVEAPIToken=", "publicField": "token_id", "separator": "=" }, "tlsVerifyField": "verify_ssl" },
+    { "id": "qemu-restart", "scheme": "https", "hostField": "api_url", "path": "/api2/json/nodes/{node}/qemu/{vmid}/status/reboot", "pathParameters": { "node": "segment", "vmid": "integer" }, "methods": ["POST"], "effect": "write", "credential": { "field": "token_secret", "location": "header", "name": "Authorization", "prefix": "PVEAPIToken=", "publicField": "token_id", "separator": "=" }, "tlsVerifyField": "verify_ssl" },
+    { "id": "lxc-start", "scheme": "https", "hostField": "api_url", "path": "/api2/json/nodes/{node}/lxc/{vmid}/status/start", "pathParameters": { "node": "segment", "vmid": "integer" }, "methods": ["POST"], "effect": "write", "credential": { "field": "token_secret", "location": "header", "name": "Authorization", "prefix": "PVEAPIToken=", "publicField": "token_id", "separator": "=" }, "tlsVerifyField": "verify_ssl" },
+    { "id": "lxc-stop", "scheme": "https", "hostField": "api_url", "path": "/api2/json/nodes/{node}/lxc/{vmid}/status/stop", "pathParameters": { "node": "segment", "vmid": "integer" }, "methods": ["POST"], "effect": "write", "credential": { "field": "token_secret", "location": "header", "name": "Authorization", "prefix": "PVEAPIToken=", "publicField": "token_id", "separator": "=" }, "tlsVerifyField": "verify_ssl" },
+    { "id": "lxc-restart", "scheme": "https", "hostField": "api_url", "path": "/api2/json/nodes/{node}/lxc/{vmid}/status/reboot", "pathParameters": { "node": "segment", "vmid": "integer" }, "methods": ["POST"], "effect": "write", "credential": { "field": "token_secret", "location": "header", "name": "Authorization", "prefix": "PVEAPIToken=", "publicField": "token_id", "separator": "=" }, "tlsVerifyField": "verify_ssl" }
+  ],
+  "operations": {
+    "connection.test": { "version": "1.0.0", "kind": "query", "consumers": ["self"], "connection": "required", "permission": "view", "handler": "testConnection", "requestSchema": "schemas/operations/empty-input.json", "responseSchema": "schemas/operations/connection-test-output.json", "timeoutClass": "short", "maxRequestBytes": 1024, "maxResponseBytes": 4096 },
+    "overview": { "version": "1.0.0", "kind": "query", "consumers": ["self", "addon"], "connection": "required", "permission": "view", "handler": "overview", "requestSchema": "schemas/operations/empty-input.json", "responseSchema": "schemas/operations/overview-output.json", "timeoutClass": "standard", "maxRequestBytes": 1024, "maxResponseBytes": 262144 },
+    "guests": { "version": "1.0.0", "kind": "query", "consumers": ["self", "addon"], "connection": "required", "permission": "view", "handler": "guests", "requestSchema": "schemas/operations/empty-input.json", "responseSchema": "schemas/operations/guests-output.json", "timeoutClass": "standard", "maxRequestBytes": 1024, "maxResponseBytes": 131072 },
+    "guest-action": { "version": "1.0.0", "kind": "mutation", "consumers": ["self", "addon"], "connection": "required", "permission": "start_stop", "handler": "guestAction", "requestSchema": "schemas/operations/guest-action-input.json", "responseSchema": "schemas/operations/guest-action-output.json", "timeoutClass": "action", "maxRequestBytes": 1024, "maxResponseBytes": 8192, "auditAction": "proxmox_guest_power_action" }
+  },
+  "surfaces": "ui/surfaces.json"
+}

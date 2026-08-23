@@ -1,6 +1,8 @@
 packages:
   - "devkit/packages/*"
   - "devkit/examples/*"
+  - "plugins/official/*"
+  - "plugins/official/*/references/*"
 
 allowBuilds:
   esbuild: true

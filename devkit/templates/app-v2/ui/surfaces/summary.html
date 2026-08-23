@@ -5,47 +5,122 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>__PACKAGE_NAME__ Summary</title>
   <style>
-    :root { color-scheme: light dark; font: 14px/1.45 system-ui, sans-serif; }
-    body { margin: 0; padding: 16px; background: transparent; color: CanvasText; }
-    main { display: grid; gap: 8px; }
-    h1 { margin: 0; font-size: 1.1rem; }
-    p { margin: 0; color: GrayText; }
-    button { width: max-content; padding: 7px 11px; border: 1px solid ButtonBorder; border-radius: 6px; }
+    :root {
+      color-scheme: light dark;
+      --ink: #18242b;
+      --muted: #60717a;
+      --line: #cdd8dc;
+      --panel: rgba(255,255,255,.72);
+      --accent: #087f78;
+      --accent-soft: #d8f0ed;
+      --warning: #9a5b00;
+      --danger: #a22d3b;
+      font: 14px/1.45 system-ui, sans-serif;
+    }
+    :root[data-theme="dark"] { --ink: #e7eff1; --muted: #a9bcc1; --line: #3b5159; --panel: rgba(24,36,43,.82); --accent: #69d0c4; --accent-soft: #153d3a; --warning: #ffd078; --danger: #ffacb6; }
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 14px; background: transparent; color: var(--ink); }
+    main { display: grid; gap: 14px; min-width: 0; padding: 16px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); }
+    .meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; color: var(--muted); font-size: .78rem; }
+    .profile { overflow: hidden; max-width: 100%; text-overflow: ellipsis; white-space: nowrap; }
+    h1 { margin: 0; overflow-wrap: anywhere; font-size: clamp(1.08rem, 4vw, 1.35rem); letter-spacing: -.015em; }
+    .state { display: flex; align-items: flex-start; gap: 8px; min-width: 0; color: var(--muted); }
+    .state::before { content: ''; flex: 0 0 auto; width: 8px; height: 8px; margin-top: .38em; border-radius: 50%; background: currentColor; }
+    .state[data-tone="healthy"] { color: var(--accent); }
+    .state[data-tone="degraded"] { color: var(--warning); }
+    .state[data-tone="error"], .state[data-tone="unavailable"] { color: var(--danger); }
+    .hint { margin: -6px 0 0; color: var(--muted); font-size: .8rem; }
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    button { min-height: 36px; padding: 7px 11px; border: 1px solid var(--line); border-radius: 6px; background: transparent; color: inherit; font: inherit; cursor: pointer; }
+    button:hover { border-color: var(--accent); color: var(--accent); }
+    button:focus-visible { outline: 3px solid var(--accent-soft); outline-offset: 2px; }
+    button:disabled { cursor: not-allowed; opacity: .55; }
+    @media (max-width: 340px) { body { padding: 10px; } main { padding: 13px; } .meta { align-items: flex-start; flex-direction: column; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; } }
   </style>
 </head>
 <body>
-  <main>
+  <main id="surface" aria-busy="true">
+    <div class="meta"><span class="profile" id="profile">Connection: loading…</span><span>Status</span></div>
     <h1 id="headline">__PACKAGE_NAME__</h1>
-    <p id="status">Waiting for NAD…</p>
-    <button id="refresh" type="button">Refresh</button>
+    <p class="state" data-tone="loading" id="status" role="status" aria-live="polite">Loading current status…</p>
+    <p class="hint" id="hint">Choose a connection in the NAD panel above.</p>
+    <div class="actions"><button id="refresh" type="button">Refresh status</button></div>
   </main>
   <script>
     let port;
     let sessionId = '';
     let sequence = 0;
+    let lastHeight = 0;
+    let resizeQueued = false;
+    const surface = document.querySelector('#surface');
+    const headline = document.querySelector('#headline');
+    const status = document.querySelector('#status');
+    const profile = document.querySelector('#profile');
+    const hint = document.querySelector('#hint');
+    const refresh = document.querySelector('#refresh');
     const messageId = () => `surface_${String(++sequence).padStart(8, '0')}`;
     const send = (type, payload) => port?.postMessage({ bridgeVersion: 2, sessionId, messageId: messageId(), type, payload });
+    const text = (value, fallback) => typeof value === 'string' && value.trim() ? value.trim().slice(0, 160) : fallback;
+    const queueResize = () => {
+      if (!port || resizeQueued) return;
+      resizeQueued = true;
+      requestAnimationFrame(() => {
+        resizeQueued = false;
+        const height = Math.min(1200, Math.max(160, Math.ceil(document.body.scrollHeight)));
+        if (height !== lastHeight) { lastHeight = height; send('resize.request', { height }); }
+      });
+    };
+    const setState = (message, tone, busy = false) => {
+      status.textContent = message;
+      status.dataset.tone = tone;
+      surface.setAttribute('aria-busy', String(busy));
+      queueResize();
+    };
+    const renderContext = (payload) => {
+      document.documentElement.dataset.theme = payload?.theme === 'light' ? 'light' : 'dark';
+      const primary = Array.isArray(payload?.connectionSlots) ? payload.connectionSlots.find((slot) => slot?.slot === 'primary') : undefined;
+      const selected = primary?.profiles?.find((candidate) => candidate?.id === primary?.selectedProfileId);
+      profile.textContent = selected?.name ? `Connection: ${text(selected.name, 'Selected connection')}` : 'Connection: not selected';
+      hint.textContent = selected ? 'Change the selected connection in the NAD panel above.' : 'Choose a connection in the NAD panel above.';
+      queueResize();
+    };
+    const requestSummary = () => {
+      if (!port || refresh.disabled) return;
+      setState('Loading current status…', 'loading', true);
+      send('binding.invoke', { binding: 'summary', input: {} });
+    };
+    const renderResult = (result) => {
+      const nextHeadline = text(result?.headline, '__PACKAGE_NAME__');
+      const nextStatus = text(result?.status, 'No status is available for this connection yet.');
+      const hasData = Boolean(result && (result.headline || result.status));
+      headline.textContent = nextHeadline;
+      const degraded = /^(?:degraded|warning|error|offline)\b/i.test(nextStatus);
+      setState(nextStatus, hasData ? (degraded ? 'degraded' : 'healthy') : 'empty');
+    };
+    const renderError = (code) => {
+      const timedOut = code === 'MODULE_TIMEOUT' || code === 'BINDING_TIMEOUT';
+      setState(timedOut ? 'NAD timed out while loading this status.' : 'NAD could not load this status.', 'error');
+    };
     addEventListener('message', (event) => {
-      if (
-        event.data?.type !== 'nad.ui.connect'
-        || event.data.bridgeVersion !== 2
-        || typeof event.data.sessionId !== 'string'
-        || !/^[A-Za-z0-9_-]{22,128}$/.test(event.data.sessionId)
-        || event.ports.length !== 1
-      ) return;
+      if (event.data?.type !== 'nad.ui.connect' || event.data.bridgeVersion !== 2 || typeof event.data.sessionId !== 'string' || !/^[A-Za-z0-9_-]{22,128}$/.test(event.data.sessionId) || event.ports.length !== 1) return;
       port = event.ports[0];
       sessionId = event.data.sessionId;
       port.onmessage = ({ data }) => {
-        if (data?.type === 'binding.result' && data.payload?.binding === 'summary') {
-          document.querySelector('#headline').textContent = String(data.payload.result?.headline ?? '__PACKAGE_NAME__');
-          document.querySelector('#status').textContent = String(data.payload.result?.status ?? 'No status returned.');
-        }
-        if (data?.type === 'binding.error') document.querySelector('#status').textContent = 'This surface is unavailable.';
+        if (!data || data.bridgeVersion !== 2 || data.sessionId !== sessionId) return;
+        if (data.type === 'surface.context') renderContext(data.payload);
+        if (data.type === 'connection.changed') profile.textContent = 'Connection: updating…';
+        if (data.type === 'theme.changed') document.documentElement.dataset.theme = data.payload?.theme === 'light' ? 'light' : 'dark';
+        if (data.type === 'binding.result' && data.payload?.binding === 'summary') renderResult(data.payload.result);
+        if (data.type === 'binding.error') renderError(data.payload?.code);
+        if (data.type === 'access.revoked') { refresh.disabled = true; setState('This surface is no longer available to this account.', 'unavailable'); }
       };
+      port.start?.();
       send('surface.ready', {});
-      send('binding.invoke', { binding: 'summary', input: {} });
+      requestSummary();
+      new ResizeObserver(queueResize).observe(document.body);
     });
-    document.querySelector('#refresh').addEventListener('click', () => send('binding.invoke', { binding: 'summary', input: {} }));
+    refresh.addEventListener('click', requestSummary);
   </script>
 </body>
 </html>

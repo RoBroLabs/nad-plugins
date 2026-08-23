@@ -1,0 +1,5 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema", "type": "object", "additionalProperties": false,
+  "required": ["accepted", "profile", "action", "node", "type", "vmid", "upid"],
+  "properties": { "accepted": { "const": true }, "profile": { "type": "string", "maxLength": 80 }, "action": { "enum": ["start", "stop", "restart"] }, "node": { "type": "string" }, "type": { "enum": ["qemu", "lxc"] }, "vmid": { "type": "integer" }, "upid": { "type": ["string", "null"], "maxLength": 512 } }
+}

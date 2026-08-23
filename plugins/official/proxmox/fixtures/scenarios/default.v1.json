@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "name": "Bounded Proxmox cluster with disposable guest",
+  "description": "Exercises partial-safe node, QEMU/LXC guest, storage and uppercase-OK task reads plus an audited start confirmation without contacting Proxmox.",
+  "defaultRole": "viewer",
+  "roles": {
+    "viewer": { "grants": ["view"] },
+    "operator": { "grants": ["view", "start_stop"] },
+    "denied": { "grants": [] }
+  },
+  "config": {
+    "api_url": "https://pve-fixture.test:8006/api2/json",
+    "token_id": "nad@pve!fixture",
+    "token_secret": {
+      "present": true,
+      "secretRef": "secret:dev.robrolabs.proxmox:token_secret"
+    },
+    "verify_ssl": "true"
+  },
+  "requests": {
+    "guest-action": {
+      "method": "POST",
+      "body": { "action": "start", "node": "pve-fixture", "type": "qemu", "vmid": 101 }
+    }
+  },
+  "responses": {
+    "https://pve-fixture.test:8006/api2/json/nodes": {
+      "status": 200,
+      "headers": { "content-type": "application/json" },
+      "fixture": "../upstream/nodes.json"
+    },
+    "https://pve-fixture.test:8006/api2/json/cluster/resources?type=vm": {
+      "status": 200,
+      "headers": { "content-type": "application/json" },
+      "fixture": "../upstream/guests.json"
+    },
+    "https://pve-fixture.test:8006/api2/json/cluster/tasks": {
+      "status": 200,
+      "headers": { "content-type": "application/json" },
+      "fixture": "../upstream/tasks.json"
+    },
+    "https://pve-fixture.test:8006/api2/json/cluster/resources?type=storage": {
+      "status": 200,
+      "headers": { "content-type": "application/json" },
+      "fixture": "../upstream/storage.json"
+    },
+    "https://pve-fixture.test:8006/api2/json/nodes/pve-fixture/qemu/101/status/start": {
+      "status": 200,
+      "headers": { "content-type": "application/json" },
+      "body": { "data": "UPID:pve-fixture:00000001:00000002:00000003:qmstart:101:nad@pve:" }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "@nad/example-proxmox-guest-controls",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "license": "AGPL-3.0-only",
+  "scripts": {
+    "build": "node -e \"console.log('UI-only Add-on: no server build required.')\"",
+    "check": "nad-module check ."
+  },
+  "devDependencies": { "@nad/cli": "workspace:*", "@nad/sdk": "workspace:*", "@nad/testkit": "workspace:*" }
+}

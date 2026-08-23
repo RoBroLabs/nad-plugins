@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "releasedAt": "2026-08-11",
+  "sourceDirectory": "plugins/official/system-monitor",
+  "license": "AGPL-3.0-only",
+  "sourceTag": "system-monitor-v1.0.3",
+  "changelog": {
+    "summary": "Add an administrator-only notification proof that uses NAD core-owned channels while preserving existing System Monitor configuration and surfaces.",
+    "entries": [
+      "Add the notifications.emit capability with a single explicit test action.",
+      "Route the test event through the NAD Host API instead of adding notification provider settings to the Module.",
+      "Preserve the Module ID, slug, config keys, view permission, Page path, and Widget IDs for restart-free update."
+    ]
+  },
+  "hotUpdate": {
+    "compatibility": "compatible",
+    "preserves": [
+      "module id dev.robrolabs.system-monitor",
+      "slug system-monitor",
+      "config keys hosts, check_method, node_exporter_port",
+      "permission action view; adds administrator action notify",
+      "widget ids uptime-status and host-grid",
+      "page path /"
+    ]
+  }
+}

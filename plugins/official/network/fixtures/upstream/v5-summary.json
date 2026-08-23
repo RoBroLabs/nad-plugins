@@ -1,0 +1,10 @@
+{
+  "dns_queries_today": "800",
+  "ads_blocked_today": "200",
+  "ads_percentage_today": "25",
+  "domains_being_blocked": "110000",
+  "unique_clients": "8",
+  "queries_forwarded": "400",
+  "queries_cached": "200",
+  "status": "enabled"
+}

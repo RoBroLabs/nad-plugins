@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Proxmox guest list response",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["guests", "refreshedAt"],
+  "properties": {
+    "guests": { "type": "array", "maxItems": 256, "items": { "type": "object", "additionalProperties": true } },
+    "refreshedAt": { "type": "string", "minLength": 20, "maxLength": 40 }
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "pages": [
+    {
+      "path": "/",
+      "title": "Unraid",
+      "icon": "server",
+      "source": {
+        "endpoint": "overview",
+        "refreshIntervalMs": 30000
+      },
+      "body": [
+        {
+          "type": "section",
+          "title": "Server",
+          "body": [
+            { "type": "status", "label": "Health", "valuePath": "statusLabel", "tonePath": "statusTone" },
+            { "type": "metric", "label": "CPU", "valuePath": "cpuUsagePercent", "unit": "%" },
+            { "type": "metric", "label": "Memory", "valuePath": "memoryUsagePercent", "unit": "%" },
+            {
+              "type": "keyValue",
+              "items": [
+                { "label": "Hostname", "valuePath": "hostname" },
+                { "label": "Unraid version", "valuePath": "unraidVersion" },
+                { "label": "API version", "valuePath": "apiVersion" },
+                { "label": "Kernel", "valuePath": "kernelVersion" },
+                { "label": "CPU", "valuePath": "cpuBrand" },
+                { "label": "Cores", "valuePath": "cpuCores" },
+                { "label": "Threads", "valuePath": "cpuThreads" },
+                { "label": "Uptime (seconds)", "valuePath": "uptimeSeconds" }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "section",
+          "title": "Array and parity",
+          "body": [
+            { "type": "status", "label": "Array", "valuePath": "arrayState", "tonePath": "statusTone" },
+            { "type": "metric", "label": "Used", "valuePath": "capacity.usagePercent", "unit": "%" },
+            {
+              "type": "keyValue",
+              "items": [
+                { "label": "Total bytes", "valuePath": "capacity.totalBytes" },
+                { "label": "Used bytes", "valuePath": "capacity.usedBytes" },
+                { "label": "Free bytes", "valuePath": "capacity.freeBytes" },
+                { "label": "Parity status", "valuePath": "parity.status" },
+                { "label": "Parity progress", "valuePath": "parity.progressPercent" },
+                { "label": "Parity errors", "valuePath": "parity.errors" }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "section",
+          "title": "Workloads",
+          "body": [
+            { "type": "metric", "label": "Containers running", "valuePath": "dockerRunning" },
+            { "type": "metric", "label": "VMs running", "valuePath": "vmRunning" },
+            {
+              "type": "keyValue",
+              "items": [
+                { "label": "Containers total", "valuePath": "dockerTotal" },
+                { "label": "Containers paused", "valuePath": "dockerPaused" },
+                { "label": "VMs total", "valuePath": "vmTotal" },
+                { "label": "VMs paused", "valuePath": "vmPaused" },
+                { "label": "Partial data", "valuePath": "partial" },
+                { "label": "Last refreshed", "valuePath": "refreshedAt" }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

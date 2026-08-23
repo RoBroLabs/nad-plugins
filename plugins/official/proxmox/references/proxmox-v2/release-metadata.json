@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "releasedAt": "2026-08-13",
+  "sourceDirectory": "plugins/official/proxmox/references/proxmox-v2",
+  "license": "AGPL-3.0-only",
+  "repositoryUrl": null,
+  "sourceUrl": null,
+  "sourceTag": null,
+  "changelog": { "summary": "Reference Host/UI API v2 Proxmox App.", "entries": ["Adds unlimited named connection profiles.", "Publishes versioned guest and guest-action operations for reviewed Add-ons.", "Adds self-contained sandboxed App surfaces."] },
+  "hotUpdate": { "compatibility": "compatible", "preserves": ["Immutable Proxmox App ID and slug.", "Named connection profiles and encrypted secrets.", "Operation versions, permissions and surface IDs."] }
+}

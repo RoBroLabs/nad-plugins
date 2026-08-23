@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "name": "Legacy Pi-hole v5",
+  "description": "Exercises the legacy admin/api.php summary, status, and authenticated enable commands through local fixtures.",
+  "defaultRole": "viewer",
+  "roles": {
+    "viewer": {
+      "grants": ["view"]
+    },
+    "operator": {
+      "grants": ["view", "manage_dns"]
+    },
+    "denied": {
+      "grants": []
+    }
+  },
+  "config": {
+    "pihole_url": "https://primary.pihole.test/admin/api.php",
+    "pihole_api_key": {
+      "present": true,
+      "secretRef": "secret:dev.robrolabs.network:pihole_api_key"
+    },
+    "pihole_api_version": "v5"
+  },
+  "requests": {
+    "blocking": {
+      "method": "POST",
+      "body": { "action": "enable" }
+    }
+  },
+  "responses": {
+    "https://primary.pihole.test/admin/api.php?summaryRaw=": {
+      "status": 200,
+      "headers": { "content-type": "application/json" },
+      "fixture": "../upstream/v5-summary.json"
+    },
+    "https://primary.pihole.test/admin/api.php?status=": {
+      "status": 200,
+      "headers": { "content-type": "application/json" },
+      "body": { "status": "enabled" }
+    },
+    "https://primary.pihole.test/admin/api.php?enable=": {
+      "status": 200,
+      "headers": { "content-type": "application/json" },
+      "body": { "status": "enabled" }
+    }
+  }
+}

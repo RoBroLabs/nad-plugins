@@ -1,0 +1,16 @@
+{
+  "data": [
+    {
+      "id": "node/pve-fixture",
+      "node": "pve-fixture",
+      "status": "online",
+      "cpu": 0.2,
+      "maxcpu": 8,
+      "mem": 8589934592,
+      "maxmem": 17179869184,
+      "disk": 53687091200,
+      "maxdisk": 107374182400,
+      "uptime": 86400
+    }
+  ]
+}

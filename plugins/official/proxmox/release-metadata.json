@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "releasedAt": "2026-08-12",
+  "sourceDirectory": "plugins/official/proxmox",
+  "license": "AGPL-3.0-only",
+  "sourceTag": "proxmox-v1.0.2",
+  "changelog": {
+    "summary": "Use fast Proxmox VE cluster resource routes for bounded storage and guest inventory while preserving partial degradation and audited lifecycle controls.",
+    "entries": [
+      "Read storage once from /cluster/resources?type=storage instead of issuing slower per-node storage requests.",
+      "Remove the obsolete dynamic per-node storage scope and continue bounding storage records inside the Module.",
+      "Retain the Proxmox VE 9-compatible query-free /cluster/tasks route and bounded recent-task parsing.",
+      "Inject the PVE API token Authorization header in NAD core and keep the token secret opaque to Module code.",
+      "Add audited start, stop, and restart requests with UPID normalization and observed or explicitly indeterminate task outcomes.",
+      "Reserve, but deliberately do not implement, console access."
+    ]
+  },
+  "hotUpdate": {
+    "compatibility": "compatible",
+    "preserves": [
+      "module id dev.robrolabs.proxmox",
+      "slug proxmox",
+      "config keys api_url, token_id, token_secret, verify_ssl",
+      "permission actions view, start_stop, console",
+      "widget ids node-overview, guest-list, resource-summary, task-log",
+      "page path /"
+    ]
+  }
+}

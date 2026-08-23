@@ -1,0 +1,109 @@
+{
+  "data": {
+    "info": {
+      "os": {
+        "hostname": "tower",
+        "release": "7.2.0",
+        "kernel": "6.12.0",
+        "uptime": "2026-08-10T12:00:00.000Z"
+      },
+      "cpu": {
+        "brand": "Fixture CPU",
+        "cores": 8,
+        "threads": 16
+      },
+      "versions": {
+        "core": {
+          "unraid": "7.2.0",
+          "api": "4.32.3",
+          "kernel": "6.12.0"
+        }
+      }
+    },
+    "metrics": {
+      "cpu": { "percentTotal": 18.25 },
+      "memory": {
+        "total": "34359738368",
+        "used": "12884901888",
+        "available": "21474836480",
+        "percentTotal": 37.5
+      }
+    },
+    "array": {
+      "state": "STARTED",
+      "capacity": {
+        "kilobytes": {
+          "total": "2000000000",
+          "used": "1250000000",
+          "free": "750000000"
+        }
+      },
+      "parityCheckStatus": {
+        "status": "COMPLETED",
+        "progress": 100,
+        "errors": 0,
+        "running": false,
+        "paused": false
+      },
+      "parities": [
+        {
+          "name": "parity",
+          "type": "PARITY",
+          "status": "DISK_OK",
+          "temp": 34,
+          "size": "1000000000",
+          "fsSize": null,
+          "fsUsed": null,
+          "fsFree": null,
+          "numErrors": "0",
+          "isSpinning": true
+        }
+      ],
+      "disks": [
+        {
+          "name": "disk1",
+          "type": "DATA",
+          "status": "DISK_OK",
+          "temp": 32,
+          "size": "1000000000",
+          "fsSize": "950000000",
+          "fsUsed": "625000000",
+          "fsFree": "325000000",
+          "numErrors": "0",
+          "isSpinning": true
+        }
+      ],
+      "caches": []
+    },
+    "shares": [
+      {
+        "name": "media",
+        "size": "950000000",
+        "used": "625000000",
+        "free": "325000000",
+        "cache": true
+      }
+    ],
+    "docker": {
+      "containers": [
+        {
+          "id": "fixture:plex",
+          "names": ["Plex"],
+          "image": "plex:latest",
+          "state": "RUNNING",
+          "status": "Up 3 days",
+          "autoStart": true
+        }
+      ]
+    },
+    "vms": {
+      "domains": [
+        {
+          "id": "fixture:home-assistant",
+          "name": "Home Assistant",
+          "state": "RUNNING"
+        }
+      ]
+    }
+  }
+}

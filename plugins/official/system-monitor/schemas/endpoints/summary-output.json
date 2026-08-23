@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "System Monitor summary response",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["totalHosts", "onlineHosts", "offlineHosts", "status", "statusTone", "checkMethod", "checkMethodLabel"],
+  "properties": {
+    "totalHosts": { "type": "integer", "minimum": 0 },
+    "onlineHosts": { "type": "integer", "minimum": 0 },
+    "offlineHosts": { "type": "integer", "minimum": 0 },
+    "status": { "type": "string" },
+    "statusTone": { "enum": ["ok", "warning", "critical"] },
+    "checkMethod": { "enum": ["node_exporter", "http"] },
+    "checkMethodLabel": { "type": "string" }
+  }
+}

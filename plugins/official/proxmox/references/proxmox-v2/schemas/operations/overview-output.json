@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema", "type": "object", "additionalProperties": false,
+  "required": ["profile", "nodeCount", "onlineNodes", "guestCount", "runningGuests", "nodes", "guests"],
+  "properties": {
+    "profile": { "type": "string", "maxLength": 80 }, "nodeCount": { "type": "integer", "minimum": 0 }, "onlineNodes": { "type": "integer", "minimum": 0 },
+    "guestCount": { "type": "integer", "minimum": 0 }, "runningGuests": { "type": "integer", "minimum": 0 },
+    "nodes": { "type": "array", "maxItems": 32, "items": { "type": "object" } },
+    "guests": { "type": "array", "maxItems": 256, "items": { "type": "object" } }
+  }
+}

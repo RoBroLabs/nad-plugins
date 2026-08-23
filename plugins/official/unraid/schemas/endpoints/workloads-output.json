@@ -1,0 +1,159 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Unraid workloads response",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "containers",
+    "vms",
+    "dockerTotal",
+    "dockerRunning",
+    "dockerPaused",
+    "vmTotal",
+    "vmRunning",
+    "vmPaused",
+    "partial",
+    "errors",
+    "refreshedAt"
+  ],
+  "properties": {
+    "containers": {
+      "type": "array",
+      "maxItems": 256,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "name",
+          "image",
+          "state",
+          "status",
+          "autoStart"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "image": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "state": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "status": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "autoStart": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "vms": {
+      "type": "array",
+      "maxItems": 256,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "name",
+          "state"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "state": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          }
+        }
+      }
+    },
+    "dockerTotal": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 256
+    },
+    "dockerRunning": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 256
+    },
+    "dockerPaused": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 256
+    },
+    "vmTotal": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 256
+    },
+    "vmRunning": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 256
+    },
+    "vmPaused": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 256
+    },
+    "partial": {
+      "type": "boolean"
+    },
+    "errors": {
+      "type": "array",
+      "maxItems": 16,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "message"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 600
+          }
+        }
+      }
+    },
+    "refreshedAt": {
+      "type": "string",
+      "minLength": 20,
+      "maxLength": 40
+    }
+  }
+}

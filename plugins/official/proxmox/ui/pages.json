@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "pages": [
+    {
+      "path": "/",
+      "title": "Proxmox VE",
+      "icon": "layout-dashboard",
+      "source": { "endpoint": "overview", "refreshIntervalMs": 15000 },
+      "body": [
+        {
+          "type": "section",
+          "title": "Cluster overview",
+          "body": [
+            { "type": "status", "label": "Cluster", "valuePath": "statusLabel", "tonePath": "statusTone" },
+            { "type": "metric", "label": "Online nodes", "valuePath": "onlineNodes" },
+            { "type": "metric", "label": "Guests", "valuePath": "guestCount" },
+            { "type": "metric", "label": "Running guests", "valuePath": "runningGuests" },
+            { "type": "metric", "label": "CPU", "valuePath": "cpuPercent", "unit": "%" },
+            { "type": "metric", "label": "Memory", "valuePath": "memoryPercent", "unit": "%" },
+            { "type": "metric", "label": "Storage", "valuePath": "storagePercent", "unit": "%" },
+            { "type": "metric", "label": "Degraded sections", "valuePath": "degradedSections" }
+          ]
+        },
+        {
+          "type": "section",
+          "title": "Nodes",
+          "body": [
+            {
+              "type": "table", "rowsPath": "nodes", "emptyText": "Node data is unavailable.",
+              "columns": [
+                { "key": "node", "label": "Node", "valuePath": "node" },
+                { "key": "status", "label": "Status", "valuePath": "status" },
+                { "key": "cpu", "label": "CPU %", "valuePath": "cpuPercent" },
+                { "key": "memory", "label": "Memory %", "valuePath": "memoryPercent" },
+                { "key": "uptime", "label": "Uptime seconds", "valuePath": "uptimeSeconds" }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "section",
+          "title": "Guests",
+          "body": [
+            {
+              "type": "table", "rowsPath": "guests", "emptyText": "Guest data is unavailable.",
+              "columns": [
+                { "key": "vmid", "label": "VMID", "valuePath": "vmid" },
+                { "key": "name", "label": "Guest", "valuePath": "name" },
+                { "key": "type", "label": "Type", "valuePath": "typeLabel" },
+                { "key": "node", "label": "Node", "valuePath": "node" },
+                { "key": "status", "label": "Status", "valuePath": "status" },
+                { "key": "cpu", "label": "CPU %", "valuePath": "cpuPercent" },
+                { "key": "memory", "label": "Memory %", "valuePath": "memoryPercent" }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "section",
+          "title": "Storage",
+          "body": [
+            {
+              "type": "table", "rowsPath": "storage", "emptyText": "Storage data is unavailable.",
+              "columns": [
+                { "key": "storage", "label": "Storage", "valuePath": "storage" },
+                { "key": "node", "label": "Node", "valuePath": "node" },
+                { "key": "type", "label": "Type", "valuePath": "type" },
+                { "key": "status", "label": "Status", "valuePath": "status" },
+                { "key": "used", "label": "Used %", "valuePath": "percent" },
+                { "key": "content", "label": "Content", "valuePath": "content" }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "section",
+          "title": "Recent tasks",
+          "body": [
+            {
+              "type": "table", "rowsPath": "tasks", "emptyText": "Task data is unavailable.",
+              "columns": [
+                { "key": "type", "label": "Task", "valuePath": "type" },
+                { "key": "node", "label": "Node", "valuePath": "node" },
+                { "key": "guest", "label": "Guest", "valuePath": "guestId" },
+                { "key": "status", "label": "Status", "valuePath": "status" },
+                { "key": "result", "label": "Result", "valuePath": "exitStatus" }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "section",
+          "title": "Guest controls",
+          "body": [
+            { "type": "text", "value": "Start, stop, and restart requests require the start_stop permission. NAD validates the target, records the Proxmox UPID, re-reads task and guest state, and audits confirmed, failed, or indeterminate outcomes." },
+            { "type": "text", "value": "Console access is intentionally not included. A safe console needs an origin-bound ticket and WebSocket broker plus a dedicated reviewed interface." }
+          ]
+        }
+      ]
+    }
+  ]
+}
