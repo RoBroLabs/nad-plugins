@@ -15,11 +15,16 @@ name: Plugin release build
 on:
   push:
     tags:
-      # Deliberately a loose glob. GitHub's ref filters are not regular
-      # expressions -- '+' quantifies a literal character, not a class, so a
-      # pattern like [0-9]+ silently matches nothing and the workflow never
-      # runs. The strict <slug>-v<semver> shape is enforced in the first step,
-      # where a bad tag fails loudly instead of disappearing.
+      # One loose glob, no negation, and measured rather than assumed.
+      #
+      # Ref filters are not regular expressions: '+' quantifies a literal
+      # character, so [0-9]+ matches nothing. Worse, adding a '!' exclusion
+      # here stopped the filter matching anything at all -- four tag pushes
+      # produced zero runs, silently. A release trigger that never fires is
+      # the worst way for this to be wrong, so the glob stays broad, devkit
+      # tags are excluded by the job condition below, and the strict
+      # <slug>-v<semver> shape is enforced in the first step where a bad tag
+      # fails loudly.
       - '*-v*'
   workflow_dispatch:
     inputs:
@@ -37,6 +42,8 @@ concurrency:
 
 jobs:
   release:
+    # The devkit is released on its own tag series and is not a plugin.
+    if: ${{ !startsWith(github.ref_name, 'devkit-') }}
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
