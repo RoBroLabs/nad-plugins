@@ -15,8 +15,12 @@ name: Plugin release build
 on:
   push:
     tags:
-      - '*-v[0-9]+.[0-9]+.[0-9]+'
-      - '*-v[0-9]+.[0-9]+.[0-9]+-*'
+      # Deliberately a loose glob. GitHub's ref filters are not regular
+      # expressions -- '+' quantifies a literal character, not a class, so a
+      # pattern like [0-9]+ silently matches nothing and the workflow never
+      # runs. The strict <slug>-v<semver> shape is enforced in the first step,
+      # where a bad tag fails loudly instead of disappearing.
+      - '*-v*'
       - '!devkit-v*'
   workflow_dispatch:
     inputs:
