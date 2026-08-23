@@ -21,7 +21,6 @@ on:
       # runs. The strict <slug>-v<semver> shape is enforced in the first step,
       # where a bad tag fails loudly instead of disappearing.
       - '*-v*'
-      - '!devkit-v*'
   workflow_dispatch:
     inputs:
       plugin:
