@@ -164,7 +164,7 @@ jobs:
             echo "::error::Node $(node --version) produced ${digest} but the pinned line produced ${EXPECTED}. This package build is not reproducible across the supported toolchain."
             exit 1
           fi
-          echo "node_secondary=$(node --version)" >> "$GITHUB_ENV"
+          echo "NODE_SECONDARY=$(node --version)" >> "$GITHUB_ENV"
           rm -rf "$third"
 
       - name: Verify the candidate package structurally
