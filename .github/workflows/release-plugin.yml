@@ -1,0 +1,190 @@
+name: Plugin release build
+
+# Builds the release candidate for one plugin from its tag, proves the build is
+# deterministic, and publishes the result as a workflow artifact.
+#
+# This workflow deliberately stops short of signing. No signing key is present
+# here, and none should ever be added: the release key lives offline, and the
+# operator re-packs the signed artifact in that environment. What CI provides is
+# evidence that the source at this tag builds to exactly one set of bytes, on
+# every supported Node line, so that anyone can rebuild it and check the
+# published digest for themselves.
+#
+# See docs/RELEASING.md for the full tag -> sign -> promote sequence.
+
+on:
+  push:
+    tags:
+      - '*-v[0-9]+.[0-9]+.[0-9]+'
+      - '*-v[0-9]+.[0-9]+.[0-9]+-*'
+      - '!devkit-v*'
+  workflow_dispatch:
+    inputs:
+      plugin:
+        description: 'Plugin slug to dry-run, e.g. system-monitor'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: plugin-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve the plugin and version under release
+        id: target
+        env:
+          DISPATCH_PLUGIN: ${{ inputs.plugin }}
+        run: |
+          set -euo pipefail
+          tag=""
+          tag_version=""
+          if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
+            slug="${DISPATCH_PLUGIN}"
+          else
+            tag="${GITHUB_REF_NAME}"
+            if [[ ! "$tag" =~ ^(.+)-v([0-9]+\.[0-9]+\.[0-9]+.*)$ ]]; then
+              echo "::error::Tag '$tag' is not <slug>-v<semver>."
+              exit 1
+            fi
+            slug="${BASH_REMATCH[1]}"
+            tag_version="${BASH_REMATCH[2]}"
+          fi
+
+          directory="plugins/official/${slug}"
+          if [ ! -d "$directory" ]; then
+            echo "::error::No plugin at ${directory}. A release tag names a directory under plugins/official/."
+            exit 1
+          fi
+
+          # The manifest carries the identity NAD enforces at install time, so it
+          # is the authority here; the tag and package.json must agree with it.
+          module_id="$(node -p "require('./${directory}/manifest.json').id")"
+          manifest_slug="$(node -p "require('./${directory}/manifest.json').slug")"
+          manifest_version="$(node -p "require('./${directory}/manifest.json').version")"
+          package_version="$(node -p "require('./${directory}/package.json').version")"
+
+          if [ "$manifest_slug" != "$slug" ]; then
+            echo "::error::Directory ${slug} holds manifest slug ${manifest_slug}."
+            exit 1
+          fi
+          if [ "$manifest_version" != "$package_version" ]; then
+            echo "::error::manifest.json is ${manifest_version} but package.json is ${package_version}."
+            exit 1
+          fi
+          if [ -n "$tag_version" ] && [ "$manifest_version" != "$tag_version" ]; then
+            echo "::error::Tag ${tag} does not match manifest version ${manifest_version}. Published versions are immutable, so bump the manifest rather than moving the tag."
+            exit 1
+          fi
+
+          {
+            echo "slug=${slug}"
+            echo "directory=${directory}"
+            echo "version=${manifest_version}"
+            echo "module_id=${module_id}"
+            echo "tag=${tag}"
+            echo "file_name=${slug}-${manifest_version}.nadmod"
+            echo "revision=$(git rev-parse HEAD)"
+          } >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version-file: .node-version
+
+      - name: Enable pinned pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.15.0 --activate
+
+      - name: Install dependencies and Deno
+        run: |
+          pnpm install --frozen-lockfile --strict-peer-dependencies
+          bash devkit/scripts/ci-install-deno.sh
+          echo "$PWD/.ci-tools" >> "$GITHUB_PATH"
+
+      - name: Complete SDK gate
+        run: pnpm ci:gate
+
+      - name: Prove the build is deterministic
+        id: build
+        env:
+          DIRECTORY: ${{ steps.target.outputs.directory }}
+          FILE_NAME: ${{ steps.target.outputs.file_name }}
+        run: |
+          set -euo pipefail
+          first="$(mktemp -d)"
+          second="$(mktemp -d)"
+          node devkit/packages/cli/dist/index.js pack "$DIRECTORY" --out "$first"
+          node devkit/packages/cli/dist/index.js pack "$DIRECTORY" --out "$second"
+          if ! cmp -s "$first/$FILE_NAME" "$second/$FILE_NAME"; then
+            echo "::error::Two packs of the same source produced different bytes. This package build is not reproducible; do not release it."
+            exit 1
+          fi
+          mkdir -p release-candidate
+          cp "$first/$FILE_NAME" release-candidate/
+          {
+            echo "digest=$(sha256sum "$first/$FILE_NAME" | cut -d' ' -f1)"
+            echo "bytes=$(stat -c%s "$first/$FILE_NAME")"
+            echo "node_primary=$(node --version)"
+          } >> "$GITHUB_OUTPUT"
+          rm -rf "$first" "$second"
+
+      # A published digest only means something if a third party can reproduce
+      # it. If the bytes depended on which supported Node line built them, that
+      # promise would be void, so prove that they do not.
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 20.20.0
+
+      - name: Prove the build does not depend on the Node line
+        env:
+          DIRECTORY: ${{ steps.target.outputs.directory }}
+          FILE_NAME: ${{ steps.target.outputs.file_name }}
+          EXPECTED: ${{ steps.build.outputs.digest }}
+        run: |
+          set -euo pipefail
+          corepack enable
+          corepack prepare pnpm@9.15.0 --activate
+          pnpm install --frozen-lockfile --strict-peer-dependencies
+          pnpm build
+          third="$(mktemp -d)"
+          node devkit/packages/cli/dist/index.js pack "$DIRECTORY" --out "$third"
+          digest="$(sha256sum "$third/$FILE_NAME" | cut -d' ' -f1)"
+          if [ "$digest" != "$EXPECTED" ]; then
+            echo "::error::Node $(node --version) produced ${digest} but the pinned line produced ${EXPECTED}. This package build is not reproducible across the supported toolchain."
+            exit 1
+          fi
+          echo "node_secondary=$(node --version)" >> "$GITHUB_ENV"
+          rm -rf "$third"
+
+      - name: Verify the candidate package structurally
+        run: node devkit/packages/cli/dist/index.js verify "release-candidate/${{ steps.target.outputs.file_name }}"
+
+      - name: Record provenance
+        env:
+          MODULE_ID: ${{ steps.target.outputs.module_id }}
+          SLUG: ${{ steps.target.outputs.slug }}
+          VERSION: ${{ steps.target.outputs.version }}
+          TAG: ${{ steps.target.outputs.tag }}
+          REVISION: ${{ steps.target.outputs.revision }}
+          DIGEST: ${{ steps.build.outputs.digest }}
+          BYTES: ${{ steps.build.outputs.bytes }}
+          NODE_PRIMARY: ${{ steps.build.outputs.node_primary }}
+        run: node devkit/scripts/write-release-provenance.mjs release-candidate
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: ${{ steps.target.outputs.slug }}-${{ steps.target.outputs.version }}-candidate
+          path: release-candidate/
+          if-no-files-found: error
+          retention-days: 90

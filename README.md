@@ -64,6 +64,12 @@ To check generated contracts against a local NAD checkout, pass its path:
 node devkit/scripts/generate-contracts.mjs --check --core ../nad
 ```
 
+## Releasing
+
+Plugins version and release independently of NAD core and of each other.
+Tag `<slug>-v<semver>` and CI proves the build is reproducible before anything
+is signed. [`docs/RELEASING.md`](docs/RELEASING.md) has the full sequence.
+
 ## Signing and trust
 
 Every released package is Ed25519-signed. Public trust roots and their

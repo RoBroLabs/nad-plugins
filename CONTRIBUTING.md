@@ -31,6 +31,7 @@ pnpm ci:gate
 You do not need to contribute here to publish a plugin. Scaffold one with the
 Devkit, build it, sign it with your own key and distribute the `.nadmod` — NAD
 installs any package whose signature and declared capabilities verify.
+[`docs/RELEASING.md`](docs/RELEASING.md) covers versioning, tagging and signing.
 [`policies/PUBLISHING.md`](policies/PUBLISHING.md) describes how a plugin reaches
 the Marketplace catalogue, and [`policies/REVIEW_POLICY.md`](policies/REVIEW_POLICY.md)
 what a review covers.
