@@ -38,7 +38,11 @@ pnpm devkit:build
 pnpm devkit:verify
 bash devkit/scripts/ci-devkit-clean-room.sh
 pnpm pack:system-monitor:dev
-node devkit/packages/cli/dist/index.js verify dist/system-monitor-1.0.3.nadmod
+# Derive the version from the manifest. Pinning it here meant the gate packed
+# the new version and then verified the previous one, so any version bump
+# failed the release gate on a file that had never been built.
+system_monitor_version="$(node -p "require('./plugins/official/system-monitor/manifest.json').version")"
+node devkit/packages/cli/dist/index.js verify "dist/system-monitor-${system_monitor_version}.nadmod"
 deno check plugins/official/system-monitor/dist/server/server.js
 deno run --no-config --no-lock --cached-only --deny-net --deny-env --deny-run --deny-write --deny-sys --deny-ffi --deny-import plugins/official/system-monitor/fixtures/runtime/deno-smoke.mjs
 pnpm audit --prod

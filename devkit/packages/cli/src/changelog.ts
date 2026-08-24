@@ -36,7 +36,7 @@ function today(): string {
 export async function commandChangelog(args: string[]): Promise<void> {
   const moduleArg = args[0];
   if (!moduleArg) {
-    throw new Error('Usage: nad-module changelog <module-dir> --summary <text> --entry <text> [--entry <text> ...] --preserve <contract> [--released-at YYYY-MM-DD]');
+    throw new Error('Usage: nad-module changelog <module-dir> --summary <text> --entry <text> [--entry <text> ...] --preserve <contract> [--released-at YYYY-MM-DD] [--source-tag <tag>]');
   }
   const moduleDir = resolve(moduleArg);
   const manifestValue = await readJson(resolve(moduleDir, 'manifest.json'));
@@ -58,6 +58,11 @@ export async function commandChangelog(args: string[]): Promise<void> {
     ?? relative(process.cwd(), moduleDir).replaceAll('\\', '/')
     ?? basename(moduleDir);
   const license = valueAfter(args, '--license') ?? previous?.license ?? 'AGPL-3.0-only';
+  // Derive the source tag from the version being released rather than carrying
+  // the previous one forward. Carrying it forward silently shipped release
+  // metadata that pointed at the previous version's tag, which is a provenance
+  // error in every release after the first.
+  const sourceTag = valueAfter(args, '--source-tag') ?? `${manifest.slug}-v${manifest.version}`;
   const metadata: ReleaseMetadata = {
     schemaVersion: 1,
     releasedAt,
@@ -65,7 +70,7 @@ export async function commandChangelog(args: string[]): Promise<void> {
     license,
     ...(previous?.repositoryUrl === undefined ? {} : { repositoryUrl: previous.repositoryUrl }),
     ...(previous?.sourceUrl === undefined ? {} : { sourceUrl: previous.sourceUrl }),
-    ...(previous?.sourceTag === undefined ? {} : { sourceTag: previous.sourceTag }),
+    sourceTag,
     changelog: { summary, entries },
     hotUpdate: { compatibility: 'compatible', preserves },
   };
@@ -82,7 +87,14 @@ export async function commandChangelog(args: string[]): Promise<void> {
   const heading = '# Changelog\n\n';
   const priorBody = existing.startsWith(heading) ? existing.slice(heading.length) : existing;
   const section = `## ${manifest.version} — ${releasedAt}\n\n${summary}\n\n${entries.map((entry) => `- ${entry}`).join('\n')}\n\n`;
-  const withoutSameVersion = priorBody.replace(new RegExp(`^## ${manifest.version.replaceAll('.', '\\.')} — [^\\n]+\\n[\\s\\S]*?(?=^## |$)`, 'm'), '');
+  // Match the version heading and every following line up to the next
+  // heading. The previous pattern ended at `(?=^## |$)`, and under the `m`
+  // flag `$` is end-of-line, so a re-run stripped only a fragment and appended
+  // a second copy of the body under one heading.
+  const withoutSameVersion = priorBody.replace(
+    new RegExp(`^## ${manifest.version.replaceAll('.', '\\.')} — [^\\n]+\\n(?:(?!^## )[\\s\\S])*`, 'm'),
+    '',
+  );
   await writeFile(changelogPath, `${heading}${section}${withoutSameVersion.trimStart()}`, 'utf8');
   console.log(`Updated ${resolve(moduleDir, 'release-metadata.json')}`);
   console.log(`Updated ${changelogPath}`);

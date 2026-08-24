@@ -28,7 +28,7 @@
     "preview:system-monitor": "node devkit/packages/cli/dist/index.js dev plugins/official/system-monitor --once --role viewer --endpoint summary",
     "test": "vitest run",
     "typecheck": "tsc -b",
-    "verify:system-monitor": "node devkit/packages/cli/dist/index.js verify dist/system-monitor-1.0.3.nadmod --trusted-key policies/trust-keys/robrolabs-first-party-2026-01.pub.pem --key-id robrolabs-first-party-2026-01"
+    "verify:system-monitor": "node devkit/scripts/verify-official-release.mjs system-monitor"
   },
   "devDependencies": {
     "@types/node": "^20.19.9",
