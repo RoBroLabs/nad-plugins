@@ -66,6 +66,37 @@ describe('nad-module changelog', () => {
     });
     const changelog = await readFile(join(moduleDir, 'CHANGELOG.md'), 'utf8');
     expect(changelog.match(/^## 0\.1\.0/gm)).toHaveLength(1);
+    // Re-running replaced the whole section, not just its heading: a single
+    // heading with the body repeated underneath is the failure this catches.
+    expect(changelog.match(/Adds the read-only summary\./g)).toHaveLength(1);
+    expect(changelog.match(/Adds deterministic fixtures\./g)).toHaveLength(1);
+  });
+
+  it('tracks the source tag to the version being released', async () => {
+    const moduleDir = await mkdtemp(join(tmpdir(), 'nad-changelog-test-'));
+    directories.push(moduleDir);
+    const base = [
+      moduleDir,
+      '--summary', 'Release.',
+      '--entry', 'Change.',
+      '--preserve', 'module id',
+    ];
+
+    await writeFile(join(moduleDir, 'manifest.json'), JSON.stringify(manifest('1.0.3')));
+    await commandChangelog(base);
+    expect(JSON.parse(await readFile(join(moduleDir, 'release-metadata.json'), 'utf8')))
+      .toMatchObject({ sourceTag: 'clean-room-v1.0.3' });
+
+    // The previous metadata now exists. Carrying its tag forward would ship
+    // 1.0.4 pointing at the 1.0.3 tag.
+    await writeFile(join(moduleDir, 'manifest.json'), JSON.stringify(manifest('1.0.4')));
+    await commandChangelog(base);
+    expect(JSON.parse(await readFile(join(moduleDir, 'release-metadata.json'), 'utf8')))
+      .toMatchObject({ sourceTag: 'clean-room-v1.0.4' });
+
+    await commandChangelog([...base, '--source-tag', 'custom-tag-v9']);
+    expect(JSON.parse(await readFile(join(moduleDir, 'release-metadata.json'), 'utf8')))
+      .toMatchObject({ sourceTag: 'custom-tag-v9' });
   });
 
   it('requires explicit compatibility preservation claims', async () => {
